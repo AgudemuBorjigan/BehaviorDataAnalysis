@@ -37,9 +37,7 @@ for i = 1:numel(files)
 end
 meanThresh = mean(threshArray); % average of 4 repetitions
 PmtrAllWithZero = cat(2, ListPmtr{1}, ListPmtr{2}, ListPmtr{3}, ListPmtr{4});
-if strcmp(ITDOrFM, 'ITD')
-    PmtrAllWithZero = int16(PmtrAllWithZero); % the first zero ITD or frequency deviation is not technically zero, rather it's a very small number
-end
+PmtrAllWithZero = int16(PmtrAllWithZero); % the first zero ITD or frequency deviation is not technically zero, rather it's a very small number
 PmtrAll = PmtrAllWithZero(PmtrAllWithZero ~= 0); % excluding 0 ITDs or frequency deviation
 RespAllWithZero = cat(2, ListResp{1}, ListResp{2}, ListResp{3}, ListResp{4});
 RespAll = RespAllWithZero(PmtrAllWithZero ~= 0);

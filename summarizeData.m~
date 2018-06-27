@@ -1,4 +1,4 @@
-datadir = '/home/agudemu/Data/Behavior/S149_behavior/Audiogram/';
+datadir = '/home/agudemu/Data/Behavior/S140_behavior/Audiogram/';
 cd '/home/agudemu/Data/Behavior/S149_behavior/Audiogram'
 subjs = dir(strcat(datadir, '*Ear'));
 fid = fopen('AudiogramData.csv', 'w');
