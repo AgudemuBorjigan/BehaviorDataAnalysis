@@ -1,8 +1,8 @@
-function [threshArray, meanThresh, closestPerCorr] = BehaviorDataAnalysis(subID, ITDOrFM, LeftOrRight)
-if strcmp(ITDOrFM, 'ITD')
-    filePath = strcat('/home/agudemu/Data/Behavior/', subID, '_behavior/', subID);
+function [threshArray, meanThresh, closestPerCorr] = BehaviorDataAnalysis(subID, ITDorFM, LeftOrRight)
+if strcmp(ITDorFM, 'ITD')
+    filePath = strcat('/media/agudemu/Storage/Data/Behavior/', subID, '_behavior/', subID);
 else
-    filePath = strcat('/home/agudemu/Data/Behavior/', subID, '_behavior/', subID, '_', LeftOrRight);
+    filePath = strcat('/media/agudemu/Storage/Data/Behavior/', subID, '_behavior/', subID, '_', LeftOrRight);
 end
 files = dir(strcat(filePath,'/*.mat'));
 threshArray = zeros(1,numel(files));
@@ -12,7 +12,7 @@ trialNum = zeros(1, numel(files));
 for i = 1:numel(files)
     fileName = files(i).name;
     load(strcat(filePath, '/', fileName));
-    if strcmp(ITDOrFM, 'FM')
+    if strcmp(ITDorFM, 'FM')
         ListPmtr{i} = fdevList;
         ListResp{i} = respList;
         threshArray(i) = thresh;
@@ -37,7 +37,7 @@ for i = 1:numel(files)
 end
 meanThresh = mean(threshArray); % average of 4 repetitions
 PmtrAllWithZero = cat(2, ListPmtr{1}, ListPmtr{2}, ListPmtr{3}, ListPmtr{4});
-if strcmp(ITDOrFM, 'ITD')
+if strcmp(ITDorFM, 'ITD')
     PmtrAllWithZero = int16(PmtrAllWithZero); % the first zero ITD or frequency deviation is not technically zero, rather it's a very small number
 end
 PmtrAll = PmtrAllWithZero(PmtrAllWithZero ~= 0); % excluding 0 ITDs or frequency deviation
@@ -84,19 +84,21 @@ annotation('textbox', [.2 .2 .3 .3], 'String', strcat('Num of wrong answers: ', 
 annotation('textbox', [.5 .5 .3 .3], 'String', strcat('Num of correct answers: ', num2str(NumCorrectWithZero)), 'FitBoxToText', 'on');
 annotation('textbox', [.5 .2 .3 .3], 'String', strcat('Num of mistakes: ', num2str(NumMistakesWithZero)), 'FitBoxToText', 'on');
 
-if strcmp(ITDOrFM, 'FM')
+if strcmp(ITDorFM, 'FM')
     title(strcat('Subject response: ', subID, LeftOrRight));
 else
     title(strcat('Subject response: ', subID));
 end
 
-if strcmp(ITDOrFM, 'FM')
+if strcmp(ITDorFM, 'FM')
     xlabel('Fdev [Hz]');
+    unit = 'Hz';
 else
     xlabel('ITD [us]');
+    unit = 'us';
 end
 ylabel('Correct or wrong');
-legend('Rep1', 'Rep2', 'Rep3', 'Rep4', strcat('Adjusted threshold---', num2str(Thresh), 'us, at', num2str(closestPerCorr),'%'), strcat('meanThreshold---', num2str(meanThresh), 'us, at', ...
+legend('Rep1', 'Rep2', 'Rep3', 'Rep4', strcat('Adjusted threshold---', num2str(Thresh), unit, ',at', num2str(closestPerCorr),'%'), strcat('meanThreshold---', num2str(meanThresh), unit, ', at', ...
     num2str(NumGuessWithZero/(NumGuessWithZero + NumWrongWithZero)*100), '%'));
 
 % ones and zeros as a function of ITDs
@@ -113,7 +115,7 @@ plot(ITDFdevsWithZeros, numZeros, '--b*');
 hold on;
 plot([meanThresh, meanThresh], [0,40], 'r');
 plot([Thresh, Thresh], [0, 40], 'g');
-if strcmp(ITDOrFM, 'FM')
+if strcmp(ITDorFM, 'FM')
     xlabel('Fdev [Hz]');
     title(strcat('Number of ones and zeros vs Fdevs: ', subID, LeftOrRight));
     
@@ -122,8 +124,8 @@ else
     title(strcat('Number of ones and zeros vs ITDs: ', subID));
 end
 ylabel('Number of responses');
-legend('Correct', 'Wrong', strcat('meanThreshold---', num2str(meanThresh), 'us, at', num2str(NumGuessWithZero/(NumGuessWithZero + NumWrongWithZero)*100), '%'), ...
-    strcat('Adjusted threshold---', num2str(Thresh), 'us, at', num2str(closestPerCorr), '%'));
+legend('Correct', 'Wrong', strcat('meanThreshold---', num2str(meanThresh), unit, ',at', num2str(NumGuessWithZero/(NumGuessWithZero + NumWrongWithZero)*100), '%'), ...
+    strcat('Adjusted threshold---', num2str(Thresh), unit, ', at', num2str(closestPerCorr), '%'));
 str = {strcat('Num of corrects below threshold: ', num2str(NumGuessWithZero)), ...
     strcat('Num of total responses below threshold: ', num2str(NumGuessWithZero+NumWrongWithZero)), ...
     strcat('Percent correct: ', num2str(NumGuessWithZero/(NumGuessWithZero + NumWrongWithZero)*100), '%')};

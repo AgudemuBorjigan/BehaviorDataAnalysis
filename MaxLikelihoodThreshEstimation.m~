@@ -1,0 +1,20 @@
+ITDcorrt = [];
+ITDwrong = [];
+p_corrt = zeros(1, numel(ITDcorrt));
+p_wrong = zeros(1, numel(ITDwrong));
+
+for i = 1:numel(ITDcorrt)
+    p_corrt = 0.5 + 0.5*(1+exp(-k*(ITDcorrt(i) - T)));
+end
+
+for i = 1:numel(ITDwrong)
+    p_wrong = 1 - (0.5 + 0.5*(1+exp(-k*(ITDwrong(i) - T))));
+end
+
+for i = 1:(numel(p_corrt)-1)
+    p_corrt_mul = p_corrt(i) * p_corrt(i+1);
+end
+
+for i = 1:(numel(p_)-1)
+    p_wrong_mul = p_wrong(i) * p_wrong(i+1);
+end
