@@ -1,16 +1,48 @@
 %% Data collected
 
 % Behavior
-FMleft = [7.53, 4.5, 4.5, 7.5, 6, 5.5, 6, 11, 7.5, 6, 7.97, 4.73, 4.5, 2, 3, 1.5, 3, ...
-    3, 5, 4.5, 2, 7, 7.5, 4.52];
+% Threshold "correction" based on the parameter value that has percent
+% correct closest to 75%, counting all the responses before it, the percent
+% correct is not exactly at its own value
+% FMleft = [7.53, 4.5, 4.5, 7.5, 6, 5.5, 6, 11, 7.5, 6, 7.97, 4.73, 4.5, 2, 3, 1.5, 3, ...
+%     3, 5, 4.5, 2, 7, 7.5, 4.52];
+% 
+% FMright = [11.5, 6.5, 4.5, 6.5, 6.5, 5, 7, 11.77, 6.5, 6.5, 10, 6, 3.5, 3.5, 3, 3, ...
+%     3.5, 2, 2, 3, 3, 8, 6, 6.5];
 
-FMright = [11.5, 6.5, 4.5, 6.5, 6.5, 5, 7, 11.77, 6.5, 6.5, 10, 6, 3.5, 3.5, 3, 3, ...
-    3.5, 2, 2, 3, 3, 8, 6, 6.5];
+% threshold correction based on maximum likelihooh estimation, at 75%
+% FMleft = [4.1, 2.3, 2.5, 4.6, 3.9, 2.8, 4.8, 8.7, 4, 4.2, 6.7, 4.2, 2.4, 1.5, 1.9, 0.9, 1.9, ...
+%     1.7, 2.4, 2.7, 1.3, 4.3, 5.5, 3.4];
+% FMright = [8.6, 4.3, 2.7, 4.3, 4.3, 3.3, 4.3, 11.4, 3.7, 3.7, 7.4, 3.3, 2.3, 2.2, 1.9, 1.5, ...
+%     1.9, 1.4, 1.6, 2, 1.5, 5.1, 4, 4.5];
+
+% thresholds (maxlikelihood estimation) exluding those subjects with large
+% different between two ears
+FMleft = [2.5, 4.6, 3.9, 2.8, 4.8, 4, 4.2, 6.7, 4.2, 2.4, 1.5, 1.9, 0.9, 1.9, ...
+    1.7, 2.4, 2.7, 1.3, 4.3];
+FMright = [2.7, 4.3, 4.3, 3.3, 4.3, 3.7, 3.7, 7.4, 3.3, 2.3, 2.2, 1.9, 1.5, ...
+    1.9, 1.4, 1.6, 2, 1.5, 5.1];
 
 FM = (FMleft + FMright)/2;
 
-ITDThreshs = [45, 45, 40, 20, 35, 30, 35, 65, 35, 50, 40, 40, 20, 15, 45, 32.81, 15, ...
-    45, 49.53, 20, 20, 55, 15, 24.22];
+% FMs selecting the bad ear after a few subjects excluded
+% FM = [2.7, 4.6, 4.3, 3.3, 4.8, 4, 4.2, 7.4, 4.2, 2.4, 2.2, 1.9, 1.5, 1.9, 1.7, 2.4, 2.7, 1.5, 5.1];
+
+% FM = abs(FMleft - FMright);
+
+% Threshold "correction" based on percent correct calculation considering
+% responses at values before the "potential threshold"
+% ITDThreshs = [45, 45, 40, 20, 35, 30, 35, 65, 35, 50, 40, 40, 20, 15, 45, 32.81, 15, ...
+%     45, 49.53, 20, 20, 55, 15, 24.22];
+
+% Threshold estimation based on maximum likelihood estimation  
+% ITDThreshs = [17, 28, 36, 17, 26, 21, 23, 51, 21, 26, 25, 27, 14, 22, 29, 11, 13, ...
+%     27, 43, 14, 15, 39, 14, 8];
+
+% Thresholds excluding subjects with large FM threshold difference between
+% two ears
+ITDThreshs = [36, 17, 26, 21, 23, 21, 26, 25, 27, 14, 22, 29, 11, 13, ...
+    27, 43, 14, 15, 39];
 
 % EEG
 evoked = [0.15, 0.34, 0.52, 0.43, 0.27, 0.55, 0.12, 0.5, 0.4, 0.3, 0.87, 0.88, 0.51, ...
@@ -103,6 +135,26 @@ set(l, 'Color', 'r', 'LineWidth', 2);
 xlabel('ITD threshold [us]');
 ylabel('Slopes');
 title('ITD vs slopes');
+set(gca, 'FontSize', 16);
+
+dim = [.2 .5 .3 .3];
+corr = corr_ITDs_slopes(1,2); p = p_ITDs_slopes(1,2);
+info = {strcat('corr = ', num2str(corr), ', ', 'p = ', num2str(p)), 'N = 24'}; 
+annotation('textbox', dim, 'String', info, 'FitBoxToText', 'on');
+
+% FM difference vs Evoked response
+figure(5);
+[corr_FM_evoked, p_FM_evoked] = corrcoef(evoked, FM);
+plot(evoked, FM, '+', 'LineWidth', 2);
+hold on;
+l = lsline;
+set(l, 'Color', 'r', 'LineWidth', 2);
+% hold on;
+% ref = refline(0,0);
+% set(ref, 'Color', 'k', 'LineStyle', '-.');
+ylabel('FM threshold [Hz]');
+xlabel('Normalized magnitude');
+title('FM vs evoked');
 set(gca, 'FontSize', 16);
 
 dim = [.2 .5 .3 .3];

@@ -1,4 +1,4 @@
-function MaxLikelihood(subID, ITDorFM, LeftOrRight)
+function MaxLikelihoodSymbolicMethod(subID, ITDorFM, LeftOrRight)
 if strcmp(ITDorFM, 'ITD')
     filePath = strcat('/media/agudemu/Storage/Data/Behavior/', subID, '_behavior/', subID);
 else

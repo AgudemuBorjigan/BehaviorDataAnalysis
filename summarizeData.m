@@ -1,10 +1,11 @@
-datadir = '/home/agudemu/Data/Behavior/S149_behavior/Audiogram/';
-cd '/home/agudemu/Data/Behavior/S149_behavior/Audiogram'
+datadir = '/media/agudemu/Storage/Data/Behavior/S149_behavior/Audiogram/';
+cd '/media/agudemu/Storage/Data/Behavior/S149_behavior/Audiogram/'
 subjs = dir(strcat(datadir, '*Ear'));
 fid = fopen('AudiogramData.csv', 'w');
 freqs  = [0.5, 1, 2, 4, 8]*1000;
 avgThresh = [8.6, 2.7, 0.5, 0.1, 23.1];
 fprintf(fid, 'Subject, Ear, 500, 1000, 2000, 4000, 8000\n');
+threshArrays = zeros(2, numel(freqs));
 for k = 1:numel(subjs)
     subj = subjs(k);
     sID = subj.name(1:4);
@@ -20,9 +21,15 @@ for k = 1:numel(subjs)
         fname = ftemp.name;
         data = load(strcat(subj.folder, '/', subj.name, '/', fname), 'thresh');
         hearingLevel = data.thresh - avgThresh(j);
+        threshArrays(k, j) = hearingLevel;
         fprintf(fid, ',%f',hearingLevel);
     end
     fprintf(fid, '\n');
+end
+fprintf(fid, '%s, %s', sID, 'diff');
+for i = 1:numel(freqs)
+    diff = abs(threshArrays(1, i) - threshArrays(2, i));
+    fprintf(fid, ',%f', diff);
 end
 fclose(fid);
 

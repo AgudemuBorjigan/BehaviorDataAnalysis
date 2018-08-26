@@ -130,7 +130,7 @@ str = {strcat('Num of corrects below threshold: ', num2str(NumGuessWithZero)), .
     strcat('Num of total responses below threshold: ', num2str(NumGuessWithZero+NumWrongWithZero)), ...
     strcat('Percent correct: ', num2str(NumGuessWithZero/(NumGuessWithZero + NumWrongWithZero)*100), '%')};
 annotation('textbox', [.2 .5 .3 .3], 'String', str, 'FitBoxToText', 'on');
-%% Percent correct
+% Percent correct
 % figure(3);
 % PmtrUnique = unique(PmtrAll);
 % PmtrReps = histc(PmtrAll, PmtrUnique); % repetitions of an ITD
@@ -143,23 +143,24 @@ annotation('textbox', [.2 .5 .3 .3], 'String', str, 'FitBoxToText', 'on');
 % xlabel('ITD [us]');
 % ylabel('Percent correct [%]');
 % title('Percent corrects vs ITDs');
-% parameter trace plot
-% figure(4);
-% for i = 1:numel(files)
-%     if i == 1
-%         trialNumTtl = trialNum(i);
-%         plot(1:trialNumTtl, ListPmtr{i},'-o');
-%     else
-%         plot((trialNumTtl + 1):(trialNumTtl + trialNum(i)), ListPmtr{i},'-o');
-%         trialNumTtl = trialNumTtl + trialNum(i);
-%     end
-%     hold on;
-% end
-% if strcmp(ITDOrFM, 'ITD')
-%     ylabel('ITD [us]');
-% else
-%     ylabel('Frequency deviation [Hz]');
-% end
-% title(strcat('Parameter trace: ', subID));
-% xlabel('Number of trials');
-% legend('Rep1', 'Rep2', 'Rep3', 'Rep4');
+% Parameter trace plot
+figure(4);
+for i = 1:numel(files)
+    if i == 1
+        trialNumTtl = trialNum(i);
+        plot(1:trialNumTtl, ListPmtr{i},'-o');
+    else
+        plot((trialNumTtl + 1):(trialNumTtl + trialNum(i)), ListPmtr{i},'-o');
+        trialNumTtl = trialNumTtl + trialNum(i);
+    end
+    hold on;
+end
+if strcmp(ITDOrFM, 'ITD')
+    ylabel('ITD [us]');
+else
+    ylabel('Frequency deviation [Hz]');
+end
+title(strcat('Parameter trace: ', subID));
+xlabel('Number of trials');
+legend('Rep1', 'Rep2', 'Rep3', 'Rep4');
+end
