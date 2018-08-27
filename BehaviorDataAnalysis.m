@@ -1,15 +1,18 @@
 function [threshArray, meanThresh, closestPerCorr] = BehaviorDataAnalysis(subjID, StimulusType, LeftOrRight)
 if strcmp(StimulusType, 'ITD')
     filePath = strcat('/media/agudemu/Storage/Data/Behavior/', subjID, '_behavior/', subjID);
+    %filePath = strcat('/Users/baoagudemu1/Desktop/Lab/PilotExperiment/DataAnalysis/Data/Behavior/', subjID, '_behavior/', subjID);
 elseif strcmp(StimulusType, 'FM')
     filePath = strcat('/media/agudemu/Storage/Data/Behavior/', subjID, '_behavior/', subjID, '_', LeftOrRight);
+    %filePath = strcat('/Users/baoagudemu1/Desktop/Lab/PilotExperiment/DataAnalysis/Data/Behavior/', subjID, '_behavior/', subjID, '_', LeftOrRight);
 elseif strcmp(StimulusType, 'ITD3down1up')
     if strcmp(subjID(end-1:end), 'DD')
         subjIDOriginal = subjID(1:end-2);
     else
         subjIDOriginal = subjID;
     end
-    filePath = strcat('/media/agudemu/Storage/Data/Behavior/', subjIDOriginal, '_behavior/', subjID, '_3down1up');
+    %filePath = strcat('/media/agudemu/Storage/Data/Behavior/', subjIDOriginal, '_behavior/', subjID, '_3down1up');
+    filePath = strcat('/Users/baoagudemu1/Desktop/Lab/PilotExperiment/DataAnalysis/Data/', subjIDOriginal, '_behavior/', subjID, '_3down1up');
 end
 files = dir(strcat(filePath,'/*.mat'));
 threshArray = zeros(1,numel(files));
@@ -171,7 +174,7 @@ for i = 1:numel(files)
     end
     hold on;
 end
-if strcmp(ITDOrFM, 'ITD')
+if strcmp(StimulusType, 'ITD')
     ylabel('ITD [us]');
 else
     ylabel('Frequency deviation [Hz]');
