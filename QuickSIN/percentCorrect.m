@@ -30,7 +30,7 @@ weights = ones(1, length(SNR_co)); % no weighting
 [coeffsSpAnna, curveSpAnna, thresholdSpAnna] = FitPsycheCurveLogit(SNR_sp, perCorrt_sp_anna, weights, targets);
 
 % plot psychometric curves
-plot(curveCoRav(:,1), curveCoRav(:,2), 'b');
-plot(curveSpRav(:,1), curveSpRav(:,2), 'b', 'LineStyle', '--');
-plot(curveCoAnna(:,1), curveCoAnna(:,2), 'r');
-plot(curveSpAnna(:,1), curveSpAnna(:,2), 'r', 'LineStyle', '--');
+plot(curveCoRav(:,1), curveCoRav(:,2), 'b', 'LineWidth', 2);
+plot(curveSpRav(:,1), curveSpRav(:,2), 'b', 'LineStyle', '--', 'LineWidth', 2);
+plot(curveCoAnna(:,1), curveCoAnna(:,2), 'r', 'LineWidth', 2);
+plot(curveSpAnna(:,1), curveSpAnna(:,2), 'r', 'LineStyle', '--', 'LineWidth', 2);

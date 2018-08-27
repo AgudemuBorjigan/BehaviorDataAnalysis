@@ -7,8 +7,9 @@ for s = 1:numel(subjs)
     if strcmp(subjID(end-1:end), 'DD')
         subjID = subjID(1:end-2);
     end
-    dataDir = strcat('/media/agudemu/Storage/Data/Behavior/', subjID, '_behavior/', subjs(s), '_3down1up/');
-      
+    %dataDir = strcat('/media/agudemu/Storage/Data/Behavior/', subjID, '_behavior/', subjs(s), '_3down1up/');
+    dataDir = strcat('/Users/baoagudemu1/Desktop/Lab/PilotExperiment/DataAnalysis/Data/', subjID, '_behavior/', subjs(s), '_3down1up/');
+    
     allFiles = dir(strcat(dataDir{1}, '/*.mat')); % the first two files are hidden files
     thresholds = zeros(1, numel(allFiles));
     for i = 1:numel(allFiles)
