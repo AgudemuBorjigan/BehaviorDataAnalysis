@@ -2,7 +2,7 @@ function [slope, thresh] = MaxLikelihoodGrid(stimulusType, LeftOrRight)
 
 % subList = {'S025', 'S028', 'S031', 'S043', 'S046', 'S072', 'S075', 'S078', 'S083', 'S084', 'S117', 'S119', 'S123', ...
 %     'S127', 'S128', 'S132', 'S133', 'S135', 'S139', 'S140', 'S143', 'S144', 'S145', 'S149'};
-subList = {'Satya'}; %, 'SatyaDD', 'Kristen', 'Rav', 'S116'
+subList = {'Satya', 'SatyaDD', 'Kristen', 'Rav', 'S116'};
 slope = zeros(1, numel(subList));
 thresh = zeros(1, numel(subList));
 

@@ -129,8 +129,8 @@ plot(ITDFdevsWithZeros, numOnes, '-.ko');
 hold on;
 plot(ITDFdevsWithZeros, numZeros, '--b*');
 hold on;
-plot([meanThresh, meanThresh], [0,80], 'r');
-plot([Thresh, Thresh], [0, 80], 'g');
+plot([meanThresh, meanThresh], [0,40], 'r');
+plot([Thresh, Thresh], [0, 40], 'g');
 if strcmp(StimulusType, 'FM')
     xlabel('Fdev [Hz]');
     title(strcat('Number of ones and zeros vs Fdevs: ', subjID, LeftOrRight));
@@ -178,4 +178,5 @@ else
 end
 title(strcat('Parameter trace: ', subjID));
 xlabel('Number of trials');
+legend('Rep1', 'Rep2', 'Rep3', 'Rep4');
 end
