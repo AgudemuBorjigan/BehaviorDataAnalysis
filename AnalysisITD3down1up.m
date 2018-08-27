@@ -27,7 +27,7 @@ for s = 1:numel(subjs)
         'variance', varIdvl, 'mean', mean(thresholds), 'meanLast4', meanLast4, 'meanFirst4', meanFirst4);
     dataArray{s} = result;
 end
-
+save('dataITD3down1up.mat', 'dataArray');
 %% Data visualization
 figure(1);
 legendInfo = cell(1, numel(subjs));
@@ -93,3 +93,6 @@ varDiffLas4vsAll = varsLast4 - vars;
 varDiffLast4vsFirst4 = varsLast4 - varsFirst4;
 meanDiffLast4vsAll = meansLast4 - means;
 meanDiffLast4vsFirst4 = meansLast4 - meansFirst4;
+
+save('dataITD3down1up.mat', 'means', 'meansLast4', 'meansFirst4', 'vars', 'varsLast4', 'varsFirst4', 'varDiffLas4vsAll', 'varDiffLast4vsFirst4', ...
+    'meanDiffLast4vsAll', 'meanDiffLast4vsFirst4', 'meanDiffDD', 'varDiffDD');
