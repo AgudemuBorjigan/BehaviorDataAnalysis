@@ -1,5 +1,5 @@
-datadir = '/media/agudemu/Storage/Data/Behavior/S149_behavior/Audiogram/';
-cd '/media/agudemu/Storage/Data/Behavior/S149_behavior/Audiogram/'
+datadir = '/media/agudemu/Storage/Data/Behavior/S117_behavior/Audiogram/';
+cd '/media/agudemu/Storage/Data/Behavior/S117_behavior/Audiogram/'
 subjs = dir(strcat(datadir, '*Ear'));
 fid = fopen('AudiogramData.csv', 'w');
 freqs  = [0.5, 1, 2, 4, 8]*1000;
