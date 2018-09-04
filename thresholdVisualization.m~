@@ -1,16 +1,15 @@
 %% ITD3down1up
 % Note that different day testing needs to be added right after its previous  
-subjs = {'Satya', 'SatyaDD', 'Kristen', 'Rav', 'S116', 'Anna', 'Bre', 'S117', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084'}; 
-numSubj = numel(subjs);
+subjs = {'Satya', 'SatyaDD', 'Kristen', 'Rav', 'S116', 'Anna', 'Bre', 'S117', 'S128', 'S132', 'S078', 'S149'}; 
 
 dataArray = dataExtraction(subjs, 'Ubuntu', 'ITD3down1up', 'BothEar');
 % variance, mean of the first, last half, and the whole session can be
 % computed for storage and saved
 % save('dataITD3down1up.mat', 'dataArray');
 figure;
-legendInfo = cell(1, numSubj);
+legendInfo = cell(1, numel(subjs));
 
-for s = 1:numSubj
+for s = 1:numel(subjs)
     dataTmp = dataArray{s};
     subjName = dataTmp.subj;
     if strcmp(subjName(end-1:end), 'DD')
@@ -32,8 +31,8 @@ legend(legendInfo);
 % Box plot
 figure;
 threshSet = [];
-nameSet = cell(1, numSubj * numel(dataArray{1}.thresh));
-for s = 1:numSubj
+nameSet = cell(1, numel(subjs) * numel(dataArray{1}.thresh));
+for s = 1:numel(subjs)
     threshSet = [threshSet, dataArray{s}.thresh];  %#ok<AGROW>
     for i = 1:numel(dataArray{s}.thresh)
         nameSet{(s-1)*numel(dataArray{s}.thresh) + i} = dataArray{s}.subj;
@@ -44,7 +43,7 @@ ylabel('ITD [us]');
 title('ITD thresholds for all subjects');
 
 %% FM 
-subjs = {'Rav', 'S116', 'Anna', 'S117', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084'}; 
+subjs = {'Rav', 'S116', 'Anna', 'S117', '128', 'S132', 'S078', ''}; 
 
 dataArrayLeft = dataExtraction(subjs, 'Ubuntu', 'FM', 'LeftEar');
 dataArrayRight = dataExtraction(subjs, 'Ubuntu', 'FM', 'RightEar');
