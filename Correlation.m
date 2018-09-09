@@ -1,6 +1,13 @@
 OS = 'Ubuntu';
 
 subjs = {'S117', 'S117DD', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+ddIndex = [];
+for s = 1:numel(subjs)
+    subjID = subjs{s};
+    if strcmp(subjID(end-1:end), 'DD')
+        ddIndex = [ddIndex, s-1, s]; %#ok<AGROW>
+    end
+end
 %-----------------------------------------------------------------------------
 % subjects with EEG recording ...
 % excluding S117 (extremely high evoked response), which corrected the corr
@@ -60,6 +67,13 @@ plot(threshMeanFM', threshMeanITD', '+', 'LineWidth', 2);
 hold on;
 l = lsline;
 set(l, 'Color', 'r', 'LineWidth', 2);
+% labeling the different day testing points with different colors
+for s = 1: numel(ddIndex)/2
+    scatter(threshMeanFM(ddIndex((s-1)*2 + 1))', threshMeanITD(ddIndex((s-1)*2 + 1))', 'sr');
+    scatter(threshMeanFM(ddIndex((s-1)*2 + 2))', threshMeanITD(ddIndex((s-1)*2 + 2))', 'or');
+    hold on;
+end
+
 ylabel('ITD threshold [us]');
 xlabel('FM threshold [Hz]');
 title('ITD vs FM threshold');
