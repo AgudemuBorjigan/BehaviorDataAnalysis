@@ -1,5 +1,8 @@
-datadir = '/media/agudemu/Storage/Data/Behavior/S117_behavior/Audiogram/';
-cd '/media/agudemu/Storage/Data/Behavior/S117_behavior/Audiogram/'
+function audiogramHL(subjID, OS)
+if strcmp(OS, 'Ubuntu')
+datadir = strcat();
+datadir = '/media/agudemu/Storage/Data/Behavior/S078_behavior/Audiogram/';
+cd '/media/agudemu/Storage/Data/Behavior/S078_behavior/Audiogram/'
 subjs = dir(strcat(datadir, '*Ear'));
 fid = fopen('AudiogramData.csv', 'w');
 freqs  = [0.5, 1, 2, 4, 8]*1000;
@@ -32,4 +35,5 @@ for i = 1:numel(freqs)
     fprintf(fid, ',%f', diff);
 end
 fclose(fid);
+end
 

@@ -1,9 +1,15 @@
+OS = 'Ubuntu';
+
 %% ITD3down1up
 % Note that different day testing needs to be added right after its previous  
-subjs = {'Satya', 'SatyaDD', 'Kristen', 'Rav', 'S116', 'Anna', 'Bre', 'S117', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084'}; 
+subjs = {'Satya', 'SatyaDD', 'Kristen', 'Rav', 'S116', 'Anna', 'Bre', 'S117', 'S117DD', 'S128', 'S132', 'S078', 'S149', ...
+    'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+%---------------------------------------------------------------------------
+%Do we need to re-test the following subjects (paradigm was chaneged after them): 'Satya', 'SatyaDD', 'Kristen', 'Rav', 'S116', 'Anna', 'Bre'
+%---------------------------------------------------------------------------
 numSubj = numel(subjs);
 
-dataArray = dataExtraction(subjs, 'Ubuntu', 'ITD3down1up', 'BothEar');
+dataArrayITD = dataExtraction(subjs, OS, 'ITD3down1up', 'BothEar');
 % variance, mean of the first, last half, and the whole session can be
 % computed for storage and saved
 % save('dataITD3down1up.mat', 'dataArray');
@@ -11,7 +17,7 @@ figure;
 legendInfo = cell(1, numSubj);
 
 for s = 1:numSubj
-    dataTmp = dataArray{s};
+    dataTmp = dataArrayITD{s};
     subjName = dataTmp.subj;
     if strcmp(subjName(end-1:end), 'DD')
         LineStyle = '--';
@@ -32,11 +38,11 @@ legend(legendInfo);
 % Box plot
 figure;
 threshSet = [];
-nameSet = cell(1, numSubj * numel(dataArray{1}.thresh));
+nameSet = cell(1, numSubj * numel(dataArrayITD{1}.thresh));
 for s = 1:numSubj
-    threshSet = [threshSet, dataArray{s}.thresh];  %#ok<AGROW>
-    for i = 1:numel(dataArray{s}.thresh)
-        nameSet{(s-1)*numel(dataArray{s}.thresh) + i} = dataArray{s}.subj;
+    threshSet = [threshSet, dataArrayITD{s}.thresh];  %#ok<AGROW>
+    for i = 1:numel(dataArrayITD{s}.thresh)
+        nameSet{(s-1)*numel(dataArrayITD{s}.thresh) + i} = dataArrayITD{s}.subj;
     end
 end
 boxplot(threshSet, nameSet);
@@ -44,21 +50,26 @@ ylabel('ITD [us]');
 title('ITD thresholds for all subjects');
 
 %% FM 
-subjs = {'Rav', 'S116', 'Anna', 'S117', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084'}; 
+subjs = {'Rav', 'S116', 'Anna', 'S117', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127',...
+    'S133', 'S075'}; 
 
-dataArrayLeft = dataExtraction(subjs, 'Ubuntu', 'FM', 'LeftEar');
-dataArrayRight = dataExtraction(subjs, 'Ubuntu', 'FM', 'RightEar');
+dataArrayFMLeft = dataExtraction(subjs, OS, 'FM', 'LeftEar');
+dataArrayFMRight = dataExtraction(subjs, OS, 'FM', 'RightEar');
 % variance, mean of the first, last half, and the whole session can be
 % computed for storage
 %save('dataFM.mat', 'dataArrayLeft');
 %save('dataFM.mat', 'dataArrayRight');
 
-%% Box plot
+% Box plot
 figure;
-boxplot_thresh(dataArrayLeft, subjs, 'FM');
+boxplot_thresh(dataArrayFMLeft, subjs, 'FM');
 figure;
-boxplot_thresh(dataArrayRight, subjs, 'FM');
+boxplot_thresh(dataArrayFMRight, subjs, 'FM');
 
+%% Hearing threshold
+subjs = {'S117', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046'}; 
+dataArrayHLLeft = dataExtraction(subjs, OS, 'FM', 'LeftEar');
+dataArrayHLRight = dataExtraction(subjs, OS, 'FM', 'RightEar');
 %% Changes in data
 % means = zeros(1, numel(subjs));
 % meansLast4 = zeros(1, numel(subjs));

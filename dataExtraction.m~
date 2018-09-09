@@ -15,7 +15,8 @@ for s = 1:numel(subjs)
     if strcmp(stimType, 'FM')
         dataDir = strcat(rootDir, subjID, '_behavior/', subjs(s), '_', earType);
         if numel(dir(dataDir{1})) == 0 
-            dataDir{1} = strcat(rootDir, subjID, '_behavior/', subjID, '_', earType);
+            
+            dataDir = strcat(rootDir, subjID, '_behavior/', subjID, '_', earType);
         end
     elseif strcmp(stimType, 'ITD3down1up')
         dataDir = strcat(rootDir, subjID, '_behavior/', subjs(s), '_3down1up');
