@@ -1,6 +1,6 @@
-OS = 'Ubuntu';
+OS = 'Mac';
 
-subjs = {'S117', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
 ddIndex = [];
 for s = 1:numel(subjs)
     subjID = subjs{s};
@@ -41,7 +41,7 @@ end
 
 % Extracting mean FM thresholds
 dataArrayFMLeft = dataExtraction(subjs, OS, 'FM', 'LeftEar');
-dataArrayFMRight = dataExtraction(subjs, OS, 'FM', 'LeftEar');
+dataArrayFMRight = dataExtraction(subjs, OS, 'FM', 'RightEar');
 
 threshMeanFMLeft = zeros(1, numSubj);
 threshMeanFMRight = zeros(1, numSubj);
@@ -60,7 +60,8 @@ figure;
 %---------------------------------------
 % Is taking the mean appropriate?
 %---------------------------------------
-threshMeanFM = (threshMeanFMRight + threshMeanFMLeft)/2; 
+threshMeanFM = [threshMeanFMRight, threshMeanFMLeft];
+threshMeanITD = [threshMeanITD, threshMeanITD];
 [corr_ITD_FM, p_ITD_FM] = corrcoef(threshMeanITD, threshMeanFM); 
 
 plot(threshMeanFM', threshMeanITD', '+', 'LineWidth', 2); 
@@ -108,11 +109,13 @@ end
 [corrFM_HLRight500, pFM_HLRight500] = corrcoef(threshMeanFMRight, HLRight_500Hz); 
 [corrFM_HLRight4000, pFM_HLRight4000] = corrcoef(threshMeanFMRight, HLRight_4KHz); 
 
-HLarray = {HLLeft_500Hz, HLLeft_4KHz, HLRight_500Hz, HLLeft_4KHz};
+FMarray = {threshMeanFMLeft, threshMeanFMRight};
+HLarray = {HLLeft_500Hz, HLLeft_4KHz, HLRight_500Hz, HLRight_4KHz};
 corrArray = {corrFM_HLleft500(1,2), corrFM_HLleft4000(1,2), corrFM_HLRight500(1,2), corrFM_HLRight4000(1,2)};
-pArray = {pFM_HLleft500, pFM_HLleft4000, pFM_HLRight500, pFM_HLRight4000};
-HL = 
-FM = 
+pArray = {pFM_HLleft500(1,2), pFM_HLleft4000(1,2), pFM_HLRight500(1,2), pFM_HLRight4000(1,2)};
+
+
+HL = HLarray{1}; FM = FMarray{1};
 corr = corrArray{1}; p = pArray{1};
 
 figure;

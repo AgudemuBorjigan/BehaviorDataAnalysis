@@ -1,4 +1,4 @@
-OS = 'Ubuntu';
+OS = 'Mac';
 
 %% ITD3down1up
 % Note that different day testing needs to be added right after its previous  

@@ -42,6 +42,9 @@ for s = 1:numel(subjs)
     for i = 1:numel(allFiles)
         if strcmp(stimType, 'Audiogram')
             fSearch = strcat(dataDir, '/', subjs(s), '_', earType, '_', num2str(freqs(i)), '*.mat');
+            if numel(dir(fSearch{1})) == 0
+                fSearch = strcat(dataDir, '/', subjID, '_', earType, '_', num2str(freqs(i)), '*.mat');
+            end
             fnames = dir(fSearch{1});
             ftmp = fnames(1);
             fileName = ftmp.name;
