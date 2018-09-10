@@ -1,6 +1,6 @@
 OS = 'Ubuntu';
 
-subjs = {'S117', 'S117DD', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+subjs = {'S117', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
 ddIndex = [];
 for s = 1:numel(subjs)
     subjID = subjs{s};
@@ -69,9 +69,11 @@ l = lsline;
 set(l, 'Color', 'r', 'LineWidth', 2);
 % labeling the different day testing points with different colors
 for s = 1: numel(ddIndex)/2
-scatter(threshMeanFM(ddIndex)', threshMeanITD(ddIndex)', '+r');
+    scatter(threshMeanFM(ddIndex((s-1)*2 + 1))', threshMeanITD(ddIndex((s-1)*2 + 1))', 'sr');
+    scatter(threshMeanFM(ddIndex((s-1)*2 + 2))', threshMeanITD(ddIndex((s-1)*2 + 2))', 'or');
+    hold on;
 end
-hold on;
+
 ylabel('ITD threshold [us]');
 xlabel('FM threshold [Hz]');
 title('ITD vs FM threshold');
@@ -81,6 +83,52 @@ dim = [.2 .5 .3 .3];
 corr = corr_ITD_FM(1,2); p = p_ITD_FM(1,2);
 info = {strcat('corr = ', num2str(corr), ', ', 'p = ', num2str(p)), 'N = ', num2str(numSubj)}; 
 annotation('textbox', dim, 'String', info, 'FitBoxToText', 'on');
+
+%% Correlation between the FM and HL (500 Hz and 4 KHz)
+dataArrayHL_left = dataExtraction(subjs, OS, 'Audiogram', 'LeftEar');
+dataArrayHL_right = dataExtraction(subjs, OS, 'Audiogram', 'RightEar');
+HLLeft_500Hz = zeros(1, numSubj);
+HLRight_500Hz = zeros(1, numSubj);
+HLLeft_4KHz = zeros(1, numSubj);
+HLRight_4KHz = zeros(1, numSubj);
+for s = 1:numSubj
+    HLTmp = dataArrayHL_left{s}.thresh;
+    freqTmp = dataArrayHL_left{s}.freqs;
+    HLLeft_500Hz(s) = HLTmp(freqTmp == 500);
+    HLLeft_4KHz(s) = HLTmp(freqTmp == 4000);
+    
+    HLTmp = dataArrayHL_right{s}.thresh;
+    freqTmp = dataArrayHL_right{s}.freqs;
+    HLRight_500Hz(s) = HLTmp(freqTmp == 500);
+    HLRight_4KHz(s) = HLTmp(freqTmp == 4000);
+end
+
+[corrFM_HLleft500, pFM_HLleft500] = corrcoef(threshMeanFMLeft, HLLeft_500Hz); 
+[corrFM_HLleft4000, pFM_HLleft4000] = corrcoef(threshMeanFMLeft, HLLeft_4KHz); 
+[corrFM_HLRight500, pFM_HLRight500] = corrcoef(threshMeanFMRight, HLRight_500Hz); 
+[corrFM_HLRight4000, pFM_HLRight4000] = corrcoef(threshMeanFMRight, HLRight_4KHz); 
+
+HLarray = {HLLeft_500Hz, HLLeft_4KHz, HLRight_500Hz, HLLeft_4KHz};
+corrArray = {corrFM_HLleft500(1,2), corrFM_HLleft4000(1,2), corrFM_HLRight500(1,2), corrFM_HLRight4000(1,2)};
+pArray = {pFM_HLleft500, pFM_HLleft4000, pFM_HLRight500, pFM_HLRight4000};
+HL = 
+FM = 
+corr = corrArray{1}; p = pArray{1};
+
+figure;
+plot(HL, FM, '+', 'LineWidth', 2); 
+hold on;
+l = lsline;
+set(l, 'Color', 'r', 'LineWidth', 2);
+ylabel('FM threshold [Hz]');
+xlabel('Hearing level [dbSPL]');
+title('FM vs HL');
+set(gca, 'FontSize', 16);
+
+dim = [.2 .5 .3 .3];
+info = {strcat('corr = ', num2str(corr), ', ', 'p = ', num2str(p)), 'N = ', num2str(numSubj)}; 
+annotation('textbox', dim, 'String', info, 'FitBoxToText', 'on');
+
 
 %% Correlation between the behavior ITD threshold and the EEG evoked response
 figure;
