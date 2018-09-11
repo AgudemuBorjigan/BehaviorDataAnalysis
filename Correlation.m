@@ -60,11 +60,14 @@ figure;
 %---------------------------------------
 % Is taking the mean appropriate?
 %---------------------------------------
-threshMeanFM = [threshMeanFMRight, threshMeanFMLeft];
-threshMeanITD = [threshMeanITD, threshMeanITD];
+whichWorse = threshMeanFMLeft < threshMeanFMRight;
+threshMeanFM = zeros(size(whichWorse));
+threshMeanFM(whichWorse) = threshMeanFMLeft(whichWorse);
+threshMeanFM(~whichWorse) = threshMeanFMRight(~whichWorse);
+% threshMeanITD = [threshMeanITD, threshMeanITD];
 [corr_ITD_FM, p_ITD_FM] = corrcoef(threshMeanITD, threshMeanFM); 
 
-plot(threshMeanFM', threshMeanITD', '+', 'LineWidth', 2); 
+plot(log10(threshMeanFM'), log10(threshMeanITD'), '+', 'LineWidth', 2); 
 hold on;
 l = lsline;
 set(l, 'Color', 'r', 'LineWidth', 2);
