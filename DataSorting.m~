@@ -1,9 +1,10 @@
 OS = 'Ubuntu';
 
-subjs = {'S078', 'S117', 'S117DD', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135'}; 
+% 'S117DD' is not included
 
 fid = fopen('dataSet.csv', 'w');
-fprintf(fid, 'Subject, ITD, FMleft, FMright, 500Hzleft, 4000Hzleft, block\n');
+fprintf(fid, 'Subject, ITD, FMleft, FMright, 500Hzleft, 500Hzright, 4000Hzleft, 4000Hzright, block, EEG_COND\n');
 
 numSubj = numel(subjs);
 dataArrayITD = dataExtraction(subjs, OS, 'ITD3down1up', 'BothEar');
@@ -21,7 +22,9 @@ for s = 1:numSubj
     HLright = dataArrayHL_right{s}.thresh;
     freqs = dataArrayHL_left{s}.freqs;
     for b = 1:numel(ITDs)
-        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f', sID, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500),...
+        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f', subjs{s}, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500),...
             HLleft(freqs == 4000), HLright(freqs == 4000), b);
+        fprintf(fid, '\n');
     end
+    fprintf(fid, '\n');
 end

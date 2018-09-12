@@ -1,5 +1,5 @@
-dat <- read.csv('~/Desktop/Lab/Experiment/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
-#dat <- read.csv('~/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
+#dat <- read.csv('~/Desktop/Lab/Experiment/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
+dat <- read.csv('~/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
 # str(dat) # structure of dat
 
 dat$block <- as.factor(dat$block) # converting block into category (factor/string) type
@@ -23,12 +23,11 @@ dat$FMbothEars <- (dat$FMleft + dat$FMright) / 2
 m3 <- lmer(ITD ~ FMbothEars + block +X500Hzleft + X500Hzright + X4000Hzleft + X4000Hzright + (1|Subject), data=dat)
 anova(m1, m3)
 
-
-m3 <- lmer(ITD ~ FMleft + FMright + block + (1|Subject), data = dat)
-m4 <- lmer(ITD ~ block + (1|Subject), data = dat)
+dat$FMdifference <- abs(dat$FMleft - dat$FMright)
+m4 <- lmer(ITD ~ FMdifference + block +X500Hzleft + X500Hzright + X4000Hzleft + X4000Hzright + (1|Subject), data=dat)
+anova(m, m4) 
 #anova(m) #Anova(m, test.statistic = 'F')
 #summary(m)
-anova(m3, m4)
 
 m5 <- lmer(ITD ~ FMleft + FMright + X500Hzleft + X500Hzright + X4000Hzleft + X4000Hzright + (1|Subject), data = dat) # doesn't have block
 anova(m, m5) # result shows there's no significance effect from blocks
@@ -52,9 +51,14 @@ p
 p <- ggplot(aes(x = Subject, y = dat$FMright), data = dat) + geom_boxplot() + theme_classic()
 p
 
-p <- ggplot(aes(x = FMworse, y = ITD), data = dat) +geom_point() + theme_classic()
+dat$FMmeanBothEars <- (dat$FMleft+dat$FMright)/2
+p <- ggplot(aes(x = Subject, y = dat$FMmeanBothEars), data = dat) + geom_boxplot() + theme_classic()
 p
 
+
+p <- ggplot(aes(x = FMworse, y = ITD), data = dat) +geom_point() + theme_classic()
+p
+# regressing out the block
 m8 <- lm(ITD ~ block, data = dat) # what's the difference between lm and lmer
 dat$ITDadjBlock <- resid(m8) # removing the effect of blocks
 
@@ -66,13 +70,25 @@ m10 <- lmer(ITDadjBlock ~ (1|Subject), data=dat)
 anova(m9, m10)
 summary(m9)
 
+# log scale
 dat$logFMWorse <- log10(dat$FMworse)
 dat$logFMbothEars <- log10(dat$FMbothEars)
-p <- ggplot(aes(x=logFM, y=ITDadjBlock), data=dat) + geom_point() + theme_classic()
+p <- ggplot(aes(x=logFMWorse, y=ITDadjBlock), data=dat) + geom_point() + theme_classic()
 p
 
 dat$logITD <- log10(dat$ITD)
-m11 <- lmer(logITD ~ block + logFM + (1|Subject), data=dat)
+m11 <- lmer(logITD ~ block + logFMWorse + (1|Subject), data=dat)
 m12 <- lmer(logITD ~ block + (1|Subject), data=dat)
 anova(m11, m12)
- 
+
+m13 <- lmer(logITD ~ EEG_20us + (1|Subject), data=dat)
+m14 <- lmer(logITD ~ EEG_60us + (1|Subject), data=dat)
+m15 <- lmer(logITD ~ EEG_180us + (1|Subject), data=dat)
+m16 <- lmer(logITD ~ EEG_540us + (1|Subject), data=dat)
+m17 <- lmer(logITD ~ EEG_avg + (1|Subject), data=dat)
+m18 <- lmer(logITD ~ + (1|Subject), data=dat)
+anova(m18, m13)
+anova(m18, m14)
+anova(m18, m15)
+anova(m18, m16)
+anova(m18, m17)

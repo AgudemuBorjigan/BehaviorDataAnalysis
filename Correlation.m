@@ -1,6 +1,6 @@
-OS = 'Mac';
+OS = 'Ubuntu';
 
-subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135'}; 
 ddIndex = [];
 for s = 1:numel(subjs)
     subjID = subjs{s};
@@ -13,7 +13,7 @@ end
 % excluding S117 (extremely high evoked response), which corrected the corr
 % between the EEG and behavior to negative, and increased the corr between
 %-----------------------------------------------------------------------------
-subjs_EEG = {'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+subjs_EEG = {'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135'}; 
 % the ITD and FM
 numSubj = numel(subjs);
 numSubj_EEG = numel(subjs_EEG);
@@ -24,7 +24,8 @@ threshMeanITD = zeros(1, numSubj);
 for s = 1:numSubj
     dataTmp = dataArrayITD{s};
     %---------------------------------------
-    % Is taking the mean appropriate?
+    % Taking the mean is appropriate, since there is no block effects from
+    % linear regression analysis
     %---------------------------------------
     threshMeanITD(s) = mean(dataTmp.thresh);
 end
@@ -34,7 +35,8 @@ threshMeanITD_EEG = zeros(1, numSubj_EEG);
 for s = 1:numSubj_EEG
     dataTmp = dataArrayITD_EEG{s};
     %---------------------------------------
-    % Is taking the mean appropriate?
+    % Taking the mean is appropriate, since there is no block effects from
+    % linear regression analysis
     %---------------------------------------
     threshMeanITD_EEG(s) = mean(dataTmp.thresh);
 end
@@ -49,7 +51,7 @@ for s = 1:numSubj
     dataTmpLeft = dataArrayFMLeft{s};
     dataTmpRight = dataArrayFMRight{s};
     %---------------------------------------
-    % Is taking the mean appropriate?
+    % Taking the mean is appropriate since there are only 4 blocks
     %---------------------------------------
     threshMeanFMLeft(s) = mean(dataTmpLeft.thresh);
     threshMeanFMRight(s) = mean(dataTmpRight.thresh);
@@ -58,14 +60,15 @@ end
 %% Correlation between the ITD and FM
 figure;
 %---------------------------------------
-% Is taking the mean appropriate?
+% Mean FM between 2 ears is the best predictor of the ITD, worse ear FM is
+% the next, then both ears 
 %---------------------------------------
-whichWorse = threshMeanFMLeft < threshMeanFMRight;
-threshMeanFM = zeros(size(whichWorse));
-threshMeanFM(whichWorse) = threshMeanFMLeft(whichWorse);
-threshMeanFM(~whichWorse) = threshMeanFMRight(~whichWorse);
-% threshMeanFM = (threshMeanFMLeft + threshMeanFMRight)/2;
-[corr_ITD_FM, p_ITD_FM] = corrcoef(threshMeanITD, threshMeanFM); 
+% whichWorse = threshMeanFMLeft < threshMeanFMRight;
+% threshMeanFM = zeros(size(whichWorse));
+% threshMeanFM(whichWorse) = threshMeanFMLeft(whichWorse);
+% threshMeanFM(~whichWorse) = threshMeanFMRight(~whichWorse);
+threshMeanFM = (threshMeanFMLeft + threshMeanFMRight)/2;
+[corr_ITD_FM, p_ITD_FM] = corrcoef(log10(threshMeanITD), log10(threshMeanFM)); 
 
 plot(log10(threshMeanFM'), log10(threshMeanITD'), '+', 'LineWidth', 2); 
 hold on;
@@ -138,7 +141,7 @@ annotation('textbox', dim, 'String', info, 'FitBoxToText', 'on');
 
 %% Correlation between the behavior ITD threshold and the EEG evoked response
 figure;
-evoked = [0.21, 0.48, 0.50, 0.58, 0.51, 0.43, 0.30, 0.55, 0.27, 0.43, 0.64, 0.47, 0.12]; % EEG evoked response (across conditions)
+evoked = [0.21, 0.48, 0.50, 0.58, 0.51, 0.43, 0.30, 0.55, 0.27, 0.43, 0.64, 0.47, 0.12, 0.57]; % EEG evoked response (across conditions)
 [corr_ITD_evoked, p_ITD_evoked] = corrcoef(threshMeanITD_EEG, evoked);
 
 plot(threshMeanITD_EEG', evoked, '+', 'LineWidth', 2); 
