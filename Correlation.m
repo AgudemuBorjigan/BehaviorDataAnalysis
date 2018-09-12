@@ -1,6 +1,6 @@
-OS = 'Mac';
+OS = 'Ubuntu';
 
-subjs = {'S078', 'S117', 'S117DD', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
 ddIndex = [];
 for s = 1:numel(subjs)
     subjID = subjs{s};
@@ -64,7 +64,7 @@ whichWorse = threshMeanFMLeft < threshMeanFMRight;
 threshMeanFM = zeros(size(whichWorse));
 threshMeanFM(whichWorse) = threshMeanFMLeft(whichWorse);
 threshMeanFM(~whichWorse) = threshMeanFMRight(~whichWorse);
-% threshMeanITD = [threshMeanITD, threshMeanITD];
+% threshMeanFM = (threshMeanFMLeft + threshMeanFMRight)/2;
 [corr_ITD_FM, p_ITD_FM] = corrcoef(threshMeanITD, threshMeanFM); 
 
 plot(log10(threshMeanFM'), log10(threshMeanITD'), '+', 'LineWidth', 2); 

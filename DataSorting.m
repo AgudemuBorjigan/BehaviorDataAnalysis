@@ -1,6 +1,7 @@
-OS = 'Mac';
+OS = 'Ubuntu';
 
-subjs = {'S078', 'S117', 'S117DD', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+% 'S117DD' is not included
 
 fid = fopen('dataSet.csv', 'w');
 fprintf(fid, 'Subject, ITD, FMleft, FMright, 500Hzleft, 500Hzright, 4000Hzleft, 4000Hzright, block\n');
