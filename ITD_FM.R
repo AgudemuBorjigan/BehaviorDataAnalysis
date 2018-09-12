@@ -1,5 +1,5 @@
-#dat <- read.csv('~/Desktop/Lab/PilotExperiment/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
-dat <- read.csv('~/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
+dat <- read.csv('~/Desktop/Lab/Experiment/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
+#dat <- read.csv('~/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
 # str(dat) # structure of dat
 
 dat$block <- as.factor(dat$block) # converting block into category (factor/string) type
@@ -19,7 +19,7 @@ dat$FMworse[!whichWorse] <- dat$FMright[!whichWorse]
 m2 <- lmer(ITD ~ FMworse + block +X500Hzleft + X500Hzright + X4000Hzleft + X4000Hzright + (1|Subject), data=dat)
 anova(m1, m2) # it reveals that "bad ear" FM is a better predictor than combining left and right FM, since it has lower p value
 
-FMbothEars <- (dat$FMleft + dat$FMright) / 2
+dat$FMbothEars <- (dat$FMleft + dat$FMright) / 2
 m3 <- lmer(ITD ~ FMbothEars + block +X500Hzleft + X500Hzright + X4000Hzleft + X4000Hzright + (1|Subject), data=dat)
 anova(m1, m3)
 
@@ -66,7 +66,8 @@ m10 <- lmer(ITDadjBlock ~ (1|Subject), data=dat)
 anova(m9, m10)
 summary(m9)
 
-dat$logFM <- log10(dat$FMworse)
+dat$logFMWorse <- log10(dat$FMworse)
+dat$logFMbothEars <- log10(dat$FMbothEars)
 p <- ggplot(aes(x=logFM, y=ITDadjBlock), data=dat) + geom_point() + theme_classic()
 p
 

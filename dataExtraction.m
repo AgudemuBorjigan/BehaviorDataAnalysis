@@ -7,7 +7,7 @@ for s = 1:numel(subjs)
     end
     
     if strcmp(OS, 'Mac') % CHANGE AS NEEDED
-        rootDir = '/Users/baoagudemu1/Desktop/Lab/PilotExperiment/DataAnalysis/Data/';
+        rootDir = '/Users/baoagudemu1/Desktop/Lab/Experiment/DataAnalysis/Data/';
     elseif strcmp(OS, 'Ubuntu')
         rootDir = '/media/agudemu/Storage/Data/Behavior/';
     end
