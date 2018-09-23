@@ -1,9 +1,9 @@
-OS = 'Mac';
+OS = 'Ubuntu';
 
 %% ITD3down1up
 % Note that different day testing needs to be added right after its previous  
 subjs = {'Satya', 'SatyaDD', 'Kristen', 'Rav', 'S116', 'Anna', 'Bre', 'S117', 'S117DD', 'S128', 'S132', 'S078', 'S149', ...
-    'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075'}; 
+    'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S031', 'S173'}; 
 %---------------------------------------------------------------------------
 %Do we need to re-test the following subjects (paradigm was chaneged after them): 'Satya', 'SatyaDD', 'Kristen', 'Rav', 'S116', 'Anna', 'Bre'
 %---------------------------------------------------------------------------
@@ -51,7 +51,7 @@ title('ITD thresholds for all subjects');
 
 %% FM 
 subjs = {'Rav', 'S116', 'Anna', 'S117', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127',...
-    'S133', 'S075'}; 
+    'S133', 'S075', 'S031', 'S173'}; 
 
 dataArrayFMLeft = dataExtraction(subjs, OS, 'FM', 'LeftEar');
 dataArrayFMRight = dataExtraction(subjs, OS, 'FM', 'RightEar');

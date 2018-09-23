@@ -1,6 +1,6 @@
 OS = 'Ubuntu';
 
-subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135'}; 
+subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135', 'S031', 'S173'}; 
 ddIndex = [];
 for s = 1:numel(subjs)
     subjID = subjs{s};
@@ -13,7 +13,7 @@ end
 % excluding S117 (extremely high evoked response), which corrected the corr
 % between the EEG and behavior to negative, and increased the corr between
 %-----------------------------------------------------------------------------
-subjs_EEG = {'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135'}; 
+subjs_EEG = {'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135', 'S031'}; 
 % the ITD and FM
 numSubj = numel(subjs);
 numSubj_EEG = numel(subjs_EEG);
