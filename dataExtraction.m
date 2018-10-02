@@ -39,6 +39,7 @@ for s = 1:numel(subjs)
     allFiles = dir(strcat(dataDir{1}, '/*.mat')); % this makes sure hidden files are not included
     
     thresholds = zeros(1, numel(allFiles));
+    parmtrList = cell(1, numel(allFiles));
     for i = 1:numel(allFiles)
         if strcmp(stimType, 'Audiogram')
             fSearch = strcat(dataDir, '/', subjs(s), '_', earType, '_', num2str(freqs(i)), '*.mat');
@@ -55,8 +56,10 @@ for s = 1:numel(subjs)
         load(fileDir{1});
         if strcmp(stimType, 'ITD') || strcmp(stimType, 'ITD3down1up')
             thresholds(i) = round(thresh*1e6, 1);
+            parmtrList{i} = round(ITDList*1e6, 1);
         elseif strcmp(stimType, 'FM')
             thresholds(i) = thresh;
+            parmtrList{i} = fdevList;
         elseif strcmp(stimType, 'Audiogram')
             thresholds(i) = thresh - avgThresh(i);
         end
@@ -64,7 +67,7 @@ for s = 1:numel(subjs)
     if strcmp(stimType, 'Audiogram')
         result = struct('subj', subjs(s),'thresh', thresholds, 'freqs', freqs);
     else
-        result = struct('subj', subjs(s),'thresh', thresholds);
+        result = struct('subj', subjs(s),'thresh', 20*log10(thresholds), 'parmtrList', parmtrList);
     end
     dataArray{s} = result;
 end

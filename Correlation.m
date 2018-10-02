@@ -1,6 +1,6 @@
-OS = 'Ubuntu';
+OS = 'Mac';
 
-subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135', 'S031', 'S173'}; 
+subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135', 'S031', 'S173', 'S025'}; 
 ddIndex = [];
 for s = 1:numel(subjs)
     subjID = subjs{s};
@@ -13,7 +13,8 @@ end
 % excluding S117 (extremely high evoked response), which corrected the corr
 % between the EEG and behavior to negative, and increased the corr between
 %-----------------------------------------------------------------------------
-subjs_EEG = {'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135', 'S031'}; 
+subjs_EEG = {'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135', 'S031', 'S025'}; 
+
 % the ITD and FM
 numSubj = numel(subjs);
 numSubj_EEG = numel(subjs_EEG);
@@ -23,6 +24,7 @@ dataArrayITD = dataExtraction(subjs, OS, 'ITD3down1up', 'BothEar');
 threshMeanITD = zeros(1, numSubj);
 for s = 1:numSubj
     dataTmp = dataArrayITD{s};
+    dataTmp = dataTmp(1);
     %---------------------------------------
     % Taking the mean is appropriate, since there is no block effects from
     % linear regression analysis
@@ -34,6 +36,7 @@ dataArrayITD_EEG = dataExtraction(subjs_EEG, OS, 'ITD3down1up', 'BothEar');
 threshMeanITD_EEG = zeros(1, numSubj_EEG);
 for s = 1:numSubj_EEG
     dataTmp = dataArrayITD_EEG{s};
+    dataTmp = dataTmp(1);
     %---------------------------------------
     % Taking the mean is appropriate, since there is no block effects from
     % linear regression analysis
@@ -49,7 +52,9 @@ threshMeanFMLeft = zeros(1, numSubj);
 threshMeanFMRight = zeros(1, numSubj);
 for s = 1:numSubj
     dataTmpLeft = dataArrayFMLeft{s};
+    dataTmpLeft = dataTmpLeft(1);
     dataTmpRight = dataArrayFMRight{s};
+    dataTmpRight = dataTmpRight(1);
     %---------------------------------------
     % Taking the mean is appropriate since there are only 4 blocks
     %---------------------------------------
@@ -70,7 +75,7 @@ figure;
 threshMeanFM = (threshMeanFMLeft + threshMeanFMRight)/2;
 [corr_ITD_FM, p_ITD_FM] = corrcoef(log10(threshMeanITD), log10(threshMeanFM)); 
 
-plot(log10(threshMeanFM'), log10(threshMeanITD'), '+', 'LineWidth', 2); 
+plot(20*log10(threshMeanFM'), 20*log10(threshMeanITD'), '+', 'LineWidth', 2); 
 hold on;
 l = lsline;
 set(l, 'Color', 'r', 'LineWidth', 2);
@@ -81,15 +86,16 @@ for s = 1: numel(ddIndex)/2
     hold on;
 end
 
-ylabel('ITD threshold [us]');
-xlabel('FM threshold [Hz]');
+ylabel('ITD threshold [dB relative to us]');
+xlabel('FM threshold [dB relative to Hz]');
 title('ITD vs FM threshold');
-set(gca, 'FontSize', 16);
+set(gca, 'FontSize', 26);
 
 dim = [.2 .5 .3 .3];
 corr = corr_ITD_FM(1,2); p = p_ITD_FM(1,2);
-info = {strcat('corr = ', num2str(corr), ', ', 'p = ', num2str(p)), 'N = ', num2str(numSubj)}; 
-annotation('textbox', dim, 'String', info, 'FitBoxToText', 'on');
+info = {strcat('corr = ', num2str(corr), ', ', ' p = ', num2str(p)), strcat('N = ', num2str(numSubj))}; 
+atnn = annotation('textbox', dim, 'String', info, 'FitBoxToText', 'on');
+atnn.FontSize = 26;
 
 %% Correlation between the FM and HL (500 Hz and 4 KHz)
 dataArrayHL_left = dataExtraction(subjs, OS, 'Audiogram', 'LeftEar');
