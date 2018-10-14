@@ -18,7 +18,7 @@ EEG_mag540us = [1.35, 1.32, 0.80, 1.39, 1.47, 1.29, 1.77, 1.14, 1.05, 1.52, 1.20
 EEG_mag_avg =  [0.68, 1.21, 0.54, 0.84, 0.99, 0.68, 1.19, 0.47, 0.82, 0.81, 0.66, 0.88, 0.71, 0.38, 0.87, 0.84];
 
 plot([20, 60, 180, 540], [mean(EEG_20us), mean(EEG_60us), mean(EEG_180us), mean(EEG_540us)]...
-    ,'-ro', 'LineWidth', 4, 'MarkerSize', 10);
+    ,'-ro', 'LineWidth', 2, 'MarkerSize', 10);
 hold on;
 for i = 1:numel(EEG_20us)
     plot([20, 60, 180, 540], [EEG_20us(i), EEG_60us(i), EEG_180us(i), EEG_540us(i)], '--ko', ...
@@ -30,8 +30,7 @@ title('Normalized magnitude of ITD-evoked response, across conditions');
 xticklabels({'20us', '60 us', '180us', '540us'});
 xticks([20, 60, 180, 540]);
 ylabel('Normalized magnitude');
-xlabel('ITD [us]');
-set(gca, 'FontSize', 24);
+set(gca, 'FontSize', 16);
 
 %%
 fid = fopen('dataSet.csv', 'w');

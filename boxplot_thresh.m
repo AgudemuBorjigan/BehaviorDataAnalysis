@@ -18,14 +18,14 @@ h = boxplot(threshSet, nameSet);
 set(h, 'LineWidth', 2);
 set(gca, 'FontSize', 25);
 if strcmp(stimType, 'FM')
-    ylabel('FM [dB relative to Hz]');
+    ylabel('FM [dB relative to 1 Hz]');
     if strcmp(Ear, 'LeftEar')
         title('FM thresholds for all subjects (Left)');
     else
         title('FM thresholds for all subjects (Right)');
     end
 elseif strcmp(stimType, 'ITD') || strcmp(stimType, 'ITD3down1up')
-    ylabel('ITD [dB relative to us]');
+    ylabel('ITD [dB relative to 1 us]');
     title('ITD thresholds for all subjects');
 end
 end

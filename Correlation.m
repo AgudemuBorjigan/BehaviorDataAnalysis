@@ -75,7 +75,7 @@ figure;
 threshMeanFM = (threshMeanFMLeft + threshMeanFMRight)/2;
 [corr_ITD_FM, p_ITD_FM] = corrcoef(log10(threshMeanITD), log10(threshMeanFM)); 
 
-plot(20*log10(threshMeanFM'), 20*log10(threshMeanITD'), '+', 'LineWidth', 2); 
+plot(20*log10(threshMeanFM'), 20*log10(threshMeanITD'), '+', 'LineWidth', 2, 'MarkerSize', 20); 
 hold on;
 l = lsline;
 set(l, 'Color', 'r', 'LineWidth', 2);

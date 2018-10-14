@@ -3,7 +3,7 @@ OS = 'Mac';
 %% ITD3down1up
 % Note that different day testing needs to be added right after its previous  
 subjs = {'S117', 'S128', 'S132', 'S078', 'S149', ...
-    'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S135', 'S075', 'S031', 'S173', 'S025'}; 
+    'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S135', 'S075', 'S031', 'S173'}; 
 %---------------------------------------------------------------------------
 %Paradigm was chaneged after them): 'Satya', 'SatyaDD', 'Kristen', 'Rav', 'S116', 'Anna', 'Bre'
 %117DD was excluded
@@ -49,7 +49,7 @@ boxplot_thresh(dataArrayITD, subjs, 'ITD', 'BothEar', index);
 
 %% FM 
 subjs = {'S117', 'S128', 'S132', 'S078', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127',...
-    'S133', 'S135','S075', 'S031', 'S173', 'S025'}; 
+    'S133', 'S135','S075', 'S031', 'S173'}; 
 
 dataArrayFMLeft = dataExtraction(subjs, OS, 'FM', 'LeftEar');
 dataArrayFMRight = dataExtraction(subjs, OS, 'FM', 'RightEar');
