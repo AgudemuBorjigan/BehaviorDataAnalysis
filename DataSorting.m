@@ -17,6 +17,24 @@ EEG_mag180us = [1.15, 1.57, 0.74, 1.29, 1.60, 0.87, 1.30, 1.03, 1.66, 0.98, 1.17
 EEG_mag540us = [1.35, 1.32, 0.80, 1.39, 1.47, 1.29, 1.77, 1.14, 1.05, 1.52, 1.20, 1.65, 0.90, 0.70, 1.14, 1.16];
 EEG_mag_avg =  [0.68, 1.21, 0.54, 0.84, 0.99, 0.68, 1.19, 0.47, 0.82, 0.81, 0.66, 0.88, 0.71, 0.38, 0.87, 0.84];
 %% Model of ITD thresholds
+% ploting individual EEG response across conditions
+plot([20, 60, 180, 540], [mean(EEG_20us), mean(EEG_60us), mean(EEG_180us), mean(EEG_540us)]...
+    ,'-ro', 'LineWidth', 4, 'MarkerSize', 10);
+hold on;
+for i = 1:numel(EEG_20us)
+    plot([20, 60, 180, 540], [EEG_20us(i), EEG_60us(i), EEG_180us(i), EEG_540us(i)], '--ko', ...
+        'LineWidth', 2, 'MarkerSize', 5);
+    hold on;
+end
+legend('Average', 'Individual subject');
+title('Normalized magnitude of ITD-evoked response, across conditions');
+xticklabels({'20us', '60 us', '180us', '540us'});
+xticks([20, 60, 180, 540]);
+ylabel('Normalized magnitude');
+xlabel('ITD [us]');
+set(gca, 'FontSize', 24);
+
+% storing data
 fid = fopen('dataSet.csv', 'w');
 fprintf(fid, 'Subject, ITD, FMleft, FMright, 500Hzleft, 500Hzright, 4000Hzleft, 4000Hzright, block, EEG_20us, EEG_60us, EEG_180us, EEG_540us, EEG_avg, EEG_mag20us, EEG_mag60us, EEG_mag180us, EEG_mag540us, EEG_mag_avg\n');
 

@@ -1,5 +1,5 @@
-#dat <- read.csv('~/Desktop/Lab/Experiment/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
-dat <- read.csv('~/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
+dat <- read.csv('~/Desktop/Lab/Experiment/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
+# dat <- read.csv('~/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
 # str(dat) # structure of dat
 
 dat$block <- as.factor(dat$block) # converting block into category (factor/string) type
@@ -93,6 +93,7 @@ m21 <- lmer(logITD ~ EEG_mag180us + (1|Subject), data=dat)
 m22 <- lmer(logITD ~ EEG_mag540us + (1|Subject), data=dat)
 m23 <- lmer(logITD ~ EEG_mag_avg + (1|Subject), data=dat)
 
+m24 <- lmer(logITD ~ EEG_20us + EEG_60us + EEG_180us + EEG_540us + (1|Subject), data=dat)
 anova(m18, m13)
 anova(m18, m14)
 anova(m18, m15)
@@ -104,4 +105,4 @@ anova(m18, m20)
 anova(m18, m21)
 anova(m18, m22)
 anova(m18, m23)
-
+anova(m18, m24)
