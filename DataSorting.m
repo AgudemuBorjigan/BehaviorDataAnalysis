@@ -16,7 +16,7 @@ EEG_mag60us  = [0.50, 0.97, 0.59, 0.88, 0.51, 0.57, 1.10, 0.31, 0.66, 0.78, 0.51
 EEG_mag180us = [1.15, 1.57, 0.74, 1.29, 1.60, 0.87, 1.30, 1.03, 1.66, 0.98, 1.17, 1.21, 1.06, 0.58, 1.10, 1.05];
 EEG_mag540us = [1.35, 1.32, 0.80, 1.39, 1.47, 1.29, 1.77, 1.14, 1.05, 1.52, 1.20, 1.65, 0.90, 0.70, 1.14, 1.16];
 EEG_mag_avg =  [0.68, 1.21, 0.54, 0.84, 0.99, 0.68, 1.19, 0.47, 0.82, 0.81, 0.66, 0.88, 0.71, 0.38, 0.87, 0.84];
-%%
+%% Model of ITD thresholds
 fid = fopen('dataSet.csv', 'w');
 fprintf(fid, 'Subject, ITD, FMleft, FMright, 500Hzleft, 500Hzright, 4000Hzleft, 4000Hzright, block, EEG_20us, EEG_60us, EEG_180us, EEG_540us, EEG_avg, EEG_mag20us, EEG_mag60us, EEG_mag180us, EEG_mag540us, EEG_mag_avg\n');
 
@@ -36,6 +36,31 @@ for s = 1:numSubj
     HLright = dataArrayHL_right{s}.thresh;
     freqs = dataArrayHL_left{s}.freqs;
     for b = 1:numel(ITDs)
+        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', subjs{s}, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500),...
+            HLleft(freqs == 4000), HLright(freqs == 4000), b, EEG_20us(s), EEG_60us(s), EEG_180us(s), EEG_540us(s), EEG_avg(s),...
+            EEG_mag20us(s), EEG_mag60us(s), EEG_mag180us(s), EEG_mag540us(s), EEG_mag_avg(s));
+        fprintf(fid, '\n');
+    end
+    fprintf(fid, '\n');
+end
+
+%% Model of ITD-evoked response 
+fid = fopen('dataSetEEG.csv', 'w');
+fprintf(fid, 'Subject, EEG_ITC, ITD, FM\n');
+numSubj = numel(subjs);
+dataArrayITD = dataExtraction(subjs, OS, 'ITD3down1up', 'BothEar');
+dataArrayFMleft = dataExtraction(subjs, OS, 'FM', 'LeftEar');
+dataArrayFMright = dataExtraction(subjs, OS, 'FM', 'RightEar');
+
+for s = 1:numSubj
+    ITDs = dataArrayITD{s}.thresh;
+    ITDavg = mean(ITDs);
+    FMleft = mean(dataArrayFMleft{s}.thresh);
+    FMright = mean(dataArrayFMright{s}.thresh);
+    FMavg = (FMleft + FMright)/2;
+    EEGs = [EEG_20us(s), EEG_60us(s), EEG_180us(s), EEG_540us(s)];
+    
+    for b = 1:numel(EEGs)
         fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', subjs{s}, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500),...
             HLleft(freqs == 4000), HLright(freqs == 4000), b, EEG_20us(s), EEG_60us(s), EEG_180us(s), EEG_540us(s), EEG_avg(s),...
             EEG_mag20us(s), EEG_mag60us(s), EEG_mag180us(s), EEG_mag540us(s), EEG_mag_avg(s));
