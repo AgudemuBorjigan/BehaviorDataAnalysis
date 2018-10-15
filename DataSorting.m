@@ -48,8 +48,12 @@ dataArrayHL_right = dataExtraction(subjs, OS, 'Audiogram', 'RightEar');
 
 for s = 1:numSubj
     ITDs = dataArrayITD{s}.thresh;
-    FMleft = mean(dataArrayFMleft{s}.thresh);
-    FMright = mean(dataArrayFMright{s}.thresh);
+    FMleftTmp = dataArrayFMleft{s};
+    FMleftTmp = FMleftTmp(1);
+    FMleft = mean(FMleftTmp.thresh);
+    FMrightTmp = dataArrayFMright{s};
+    FMrightTmp = FMrightTmp(1);
+    FMright = mean(FMrightTmp.thresh);
     HLleft = dataArrayHL_left{s}.thresh;
     HLright = dataArrayHL_right{s}.thresh;
     freqs = dataArrayHL_left{s}.freqs;
@@ -64,24 +68,23 @@ end
 
 %% Model of ITD-evoked response 
 fid = fopen('dataSetEEG.csv', 'w');
-fprintf(fid, 'Subject, EEG_ITC, ITD, FM\n');
+fprintf(fid, 'Subject, EEG_ITC, Conditions, ITD_avg, FM_avg\n');
 numSubj = numel(subjs);
-dataArrayITD = dataExtraction(subjs, OS, 'ITD3down1up', 'BothEar');
-dataArrayFMleft = dataExtraction(subjs, OS, 'FM', 'LeftEar');
-dataArrayFMright = dataExtraction(subjs, OS, 'FM', 'RightEar');
-
+conditions = [20, 60, 180, 540]; % change as needed
 for s = 1:numSubj
     ITDs = dataArrayITD{s}.thresh;
     ITDavg = mean(ITDs);
-    FMleft = mean(dataArrayFMleft{s}.thresh);
-    FMright = mean(dataArrayFMright{s}.thresh);
+    FMleftTmp = dataArrayFMleft{s};
+    FMleftTmp = FMleftTmp(1);
+    FMleft = mean(FMleftTmp.thresh);
+    FMrightTmp = dataArrayFMright{s};
+    FMrightTmp = FMrightTmp(1);
+    FMright = mean(FMrightTmp.thresh);
     FMavg = (FMleft + FMright)/2;
     EEGs = [EEG_20us(s), EEG_60us(s), EEG_180us(s), EEG_540us(s)];
     
     for b = 1:numel(EEGs)
-        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', subjs{s}, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500),...
-            HLleft(freqs == 4000), HLright(freqs == 4000), b, EEG_20us(s), EEG_60us(s), EEG_180us(s), EEG_540us(s), EEG_avg(s),...
-            EEG_mag20us(s), EEG_mag60us(s), EEG_mag180us(s), EEG_mag540us(s), EEG_mag_avg(s));
+        fprintf(fid, '%s, %f, %f, %f, %f', subjs{s}, EEGs(b), conditions(b), ITDavg, FMavg);
         fprintf(fid, '\n');
     end
     fprintf(fid, '\n');
