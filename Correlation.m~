@@ -99,7 +99,7 @@ subjs = {'S031', 'S117', 'S123', 'S128', 'S132', 'S149', 'S185', 'S187', 'S191',
 numSubj = numel(subjs);
 %---------------------------------------------------------------------------------------------------
 threshMeanFM = (threshMeanFMLeft + threshMeanFMRight)/2;
-plvs = [4.5, 8.38, 4.99, 2.83, 2.62, 6.29, 5.75, 5.79, 11.94, 3.27, 12.37, 3.88];
+plvs = [4.5, 8.38, 4.99, 2.83, 2.62, 6.29, 5.75, 5.79, 11.94, 3.27, 9.84, 3.54];
 [corr_FM_plv, p_FM_plv] = corrcoef(threshMeanFM, plvs);
 corrPlot(threshMeanFM, plvs, corr_FM_plv, p_FM_plv, numSubj, 'FM threshold [dB relative to us]'...
     , 'Phase locking value', 'FM behavior thresholds vs EEG PLVs');

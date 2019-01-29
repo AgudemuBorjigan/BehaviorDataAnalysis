@@ -1,9 +1,14 @@
-OS = 'Ubuntu';
+OS = 'Mac';
 
-subjs = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084', 'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135', 'S031'}; 
+subjs_EEG = {'S078', 'S117', 'S128', 'S132', 'S149', 'S123', 'S143', 'S084',...
+    'S072', 'S046', 'S043', 'S127', 'S133', 'S075', 'S135', 'S031'};
 % 'S117DD' is not included
+subjs = {'S031', 'S046', 'S123', 'S127', 'S128', 'S132', 'S133', 'S135', 'S143', ...
+    'S149', 'S185', 'S192', 'S193', 'S072', 'S075',...
+    'S078', 'S084', 'S025', 'S117', 'S051', 'S187', 'S189', 'S043'};  
+% 'S173' doesn't have audiogram
 
-%% EEG data in the order of subjects listed in subjs
+%% EEG data in the order of subjects listed in subjs_EEG
 % ITC, average of auditory channels
 EEG_20us =  [0.08, 0.15, 0.06, -0.03, 0.06, 0.17, 0.34, 0.05, -0.01, 0.37, 0.01, 0.38, 0.01, 0.02, 0.11, -0.01];
 EEG_60us =  [0.26, 1.03, 0.13,  0.38, 0.28, 0.33, 0.25, 0.12,  0.25, 0.15, 0.15, 0.28, 0.34, 0.03, 0.66,  1.15];
@@ -23,7 +28,7 @@ plot([20, 60, 180, 540], [mean(EEG_20us), mean(EEG_60us), mean(EEG_180us), mean(
 hold on;
 for i = 1:numel(EEG_20us)
     plot([20, 60, 180, 540], [EEG_20us(i), EEG_60us(i), EEG_180us(i), EEG_540us(i)], '--ko', ...
-        'LineWidth', 2, 'MarkerSize', 5);
+        'LineWidth', 3, 'MarkerSize', 5);
     hold on;
 end
 legend('Average', 'Individual subject');
@@ -32,11 +37,67 @@ xticklabels({'20us', '60 us', '180us', '540us'});
 xticks([20, 60, 180, 540]);
 ylabel('Normalized magnitude');
 xlabel('ITD [us]');
-set(gca, 'FontSize', 24);
+set(gca, 'FontSize', 30);
 
 % storing data
 fid = fopen('dataSet.csv', 'w');
 fprintf(fid, 'Subject, ITD, FMleft, FMright, 500Hzleft, 500Hzright, 4000Hzleft, 4000Hzright, block, EEG_20us, EEG_60us, EEG_180us, EEG_540us, EEG_avg, EEG_mag20us, EEG_mag60us, EEG_mag180us, EEG_mag540us, EEG_mag_avg\n');
+
+numSubj = numel(subjs_EEG);
+dataArrayITD = dataExtraction(subjs_EEG, OS, 'ITD3down1up', 'BothEar');
+dataArrayFMleft = dataExtraction(subjs_EEG, OS, 'FM', 'LeftEar');
+dataArrayFMright = dataExtraction(subjs_EEG, OS, 'FM', 'RightEar');
+dataArrayHL_left = dataExtraction(subjs_EEG, OS, 'Audiogram', 'LeftEar');
+dataArrayHL_right = dataExtraction(subjs_EEG, OS, 'Audiogram', 'RightEar');
+
+
+for s = 1:numSubj
+    ITDs = dataArrayITD{s}.thresh;
+    FMleftTmp = dataArrayFMleft{s};
+    FMleftTmp = FMleftTmp(1);
+    FMleft = mean(FMleftTmp.thresh);
+    FMrightTmp = dataArrayFMright{s};
+    FMrightTmp = FMrightTmp(1);
+    FMright = mean(FMrightTmp.thresh);
+    HLleft = dataArrayHL_left{s}.thresh;
+    HLright = dataArrayHL_right{s}.thresh;
+    freqs = dataArrayHL_left{s}.freqs;
+    for b = 1:numel(ITDs)
+        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', subjs_EEG{s}, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500),...
+            HLleft(freqs == 4000), HLright(freqs == 4000), b, EEG_20us(s), EEG_60us(s), EEG_180us(s), EEG_540us(s), EEG_avg(s),...
+            EEG_mag20us(s), EEG_mag60us(s), EEG_mag180us(s), EEG_mag540us(s), EEG_mag_avg(s));
+        fprintf(fid, '\n');
+    end
+    fprintf(fid, '\n');
+end
+
+%% Model of ITD-evoked response 
+fid = fopen('dataSetEEG.csv', 'w');
+fprintf(fid, 'Subject, EEG_ITC, Conditions, ITD_avg, FM_avg\n');
+numSubj = numel(subjs_EEG);
+conditions = [20, 60, 180, 540]; % change as needed
+for s = 1:numSubj
+    ITDs = dataArrayITD{s}.thresh;
+    ITDavg = mean(ITDs);
+    FMleftTmp = dataArrayFMleft{s};
+    FMleftTmp = FMleftTmp(1);
+    FMleft = mean(FMleftTmp.thresh);
+    FMrightTmp = dataArrayFMright{s};
+    FMrightTmp = FMrightTmp(1);
+    FMright = mean(FMrightTmp.thresh);
+    FMavg = (FMleft + FMright)/2;
+    EEGs = [EEG_20us(s), EEG_60us(s), EEG_180us(s), EEG_540us(s)];
+    
+    for b = 1:numel(EEGs)
+        fprintf(fid, '%s, %f, %f, %f, %f', subjs_EEG{s}, EEGs(b), conditions(b), ITDavg, FMavg);
+        fprintf(fid, '\n');
+    end
+    fprintf(fid, '\n');
+end
+
+%% Model of just behavior data
+fid = fopen('dataSetBehavior.csv', 'w');
+fprintf(fid, 'Subject, ITD, FMleft, FMright, 500Hzleft, 500Hzright, 4000Hzleft, 4000Hzright, block\n');
 
 numSubj = numel(subjs);
 dataArrayITD = dataExtraction(subjs, OS, 'ITD3down1up', 'BothEar');
@@ -58,33 +119,8 @@ for s = 1:numSubj
     HLright = dataArrayHL_right{s}.thresh;
     freqs = dataArrayHL_left{s}.freqs;
     for b = 1:numel(ITDs)
-        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', subjs{s}, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500),...
-            HLleft(freqs == 4000), HLright(freqs == 4000), b, EEG_20us(s), EEG_60us(s), EEG_180us(s), EEG_540us(s), EEG_avg(s),...
-            EEG_mag20us(s), EEG_mag60us(s), EEG_mag180us(s), EEG_mag540us(s), EEG_mag_avg(s));
-        fprintf(fid, '\n');
-    end
-    fprintf(fid, '\n');
-end
-
-%% Model of ITD-evoked response 
-fid = fopen('dataSetEEG.csv', 'w');
-fprintf(fid, 'Subject, EEG_ITC, Conditions, ITD_avg, FM_avg\n');
-numSubj = numel(subjs);
-conditions = [20, 60, 180, 540]; % change as needed
-for s = 1:numSubj
-    ITDs = dataArrayITD{s}.thresh;
-    ITDavg = mean(ITDs);
-    FMleftTmp = dataArrayFMleft{s};
-    FMleftTmp = FMleftTmp(1);
-    FMleft = mean(FMleftTmp.thresh);
-    FMrightTmp = dataArrayFMright{s};
-    FMrightTmp = FMrightTmp(1);
-    FMright = mean(FMrightTmp.thresh);
-    FMavg = (FMleft + FMright)/2;
-    EEGs = [EEG_20us(s), EEG_60us(s), EEG_180us(s), EEG_540us(s)];
-    
-    for b = 1:numel(EEGs)
-        fprintf(fid, '%s, %f, %f, %f, %f', subjs{s}, EEGs(b), conditions(b), ITDavg, FMavg);
+        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f', subjs{s}, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500),...
+            HLleft(freqs == 4000), HLright(freqs == 4000), b);
         fprintf(fid, '\n');
     end
     fprintf(fid, '\n');

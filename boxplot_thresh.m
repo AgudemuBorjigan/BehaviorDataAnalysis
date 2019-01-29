@@ -1,22 +1,22 @@
-function boxplot_thresh(data, subjs, stimType, Ear, index) % data contain thresholds
+function boxplot_thresh(data, stimType, Ear, index) % data contain thresholds
 
 threshSet = [];
-dataTmp = data{1};
-dataTmp = dataTmp(1);
-nameSet = cell(1, numel(subjs) * numel(dataTmp.thresh));
 iteration = 0;
+numValidBlocks = 0;
 for s = index
     iteration = iteration +1;
     dataTmp = data{s};
     dataTmp = dataTmp(1);
     threshSet = [threshSet, dataTmp.thresh];  %#ok<AGROW>
     for i = 1:numel(dataTmp.thresh)
-        nameSet{(iteration-1)*numel(dataTmp.thresh) + i} = dataTmp.subj;
+        %         nameSet{numValidBlocks + i} = dataTmp.subj;
+        nameSet{numValidBlocks + i} = num2str(iteration);
     end
+    numValidBlocks = numValidBlocks + numel(dataTmp.thresh);
 end
 h = boxplot(threshSet, nameSet);
-set(h, 'LineWidth', 2);
-set(gca, 'FontSize', 25);
+set(h, 'LineWidth', 3);
+set(gca, 'FontSize', 30);
 if strcmp(stimType, 'FM')
     ylabel('FM [dB relative to 1 Hz]');
     if strcmp(Ear, 'LeftEar')

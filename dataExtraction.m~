@@ -69,7 +69,6 @@ for s = 1:numel(subjs)
     if strcmp(stimType, 'Audiogram')
         result = struct('subj', subjs(s),'thresh', thresholds, 'freqs', freqs);
     else
-        % taking log to make within individual variability look smaller
         result = struct('subj', subjs(s),'thresh', 20*log10(thresholds), 'parmtrList', parmtrList);
     end
     dataArray{s} = result;

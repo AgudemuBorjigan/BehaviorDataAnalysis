@@ -1,5 +1,5 @@
 # dat <- read.csv('~/Desktop/Lab/Experiment/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
-dat <- read.csv('~/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
+dat <- read.csv('~/DataAnalysis/BehaviorDataAnalysis/dataSetBehavior.csv', header = TRUE)
 # str(dat) # structure of dat
 
 dat$block <- as.factor(dat$block) # converting block into category (factor/string) type
