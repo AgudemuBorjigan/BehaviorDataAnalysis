@@ -36,8 +36,8 @@ else
     ylabel('Frequency deviation [Hz]');
     legend('block1', 'block2', 'block3', 'block4');
 end
-title(strcat('Response track:', subj));
-%title('Response track');
+% title(strcat('Response track:', subj));
+title('Response track');
 set(gca, 'FontSize', 30);
 
 end

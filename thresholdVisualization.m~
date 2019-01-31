@@ -32,7 +32,7 @@ dataArrayFMLeft = dataExtraction(subjs, OS, 'FM', 'LeftEar');
 dataArrayFMRight = dataExtraction(subjs, OS, 'FM', 'RightEar');
 
 % Response track of one subject
-responseTrack(dataArrayFMLeft{end-2}, 'FM', subjs{end-2});
+responseTrack(dataArrayFMLeft{end-4}, 'FM', subjs{end-4});
 % Box plot
 index = indexFromSorting(subjs, dataArrayFMLeft);
 figure;

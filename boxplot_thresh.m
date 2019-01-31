@@ -19,13 +19,15 @@ set(h, 'LineWidth', 3);
 set(gca, 'FontSize', 30);
 if strcmp(stimType, 'FM')
     ylabel('FM [dB relative to 1 Hz]');
+    xlabel('Subjects')
     if strcmp(Ear, 'LeftEar')
-        title('FM thresholds for all subjects (Left)');
+        title('FM thresholds for all subjects (Left ear)');
     else
-        title('FM thresholds for all subjects (Right)');
+        title('FM thresholds for all subjects (Right ear)');
     end
 elseif strcmp(stimType, 'ITD') || strcmp(stimType, 'ITD3down1up')
     ylabel('ITD [dB relative to 1 us]');
+    xlable('Subjects')
     title('ITD thresholds for all subjects');
 end
 end
