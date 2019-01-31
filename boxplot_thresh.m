@@ -27,7 +27,7 @@ if strcmp(stimType, 'FM')
     end
 elseif strcmp(stimType, 'ITD') || strcmp(stimType, 'ITD3down1up')
     ylabel('ITD [dB relative to 1 us]');
-    xlable('Subjects')
+    xlabel('Subjects')
     title('ITD thresholds for all subjects');
 end
 end
