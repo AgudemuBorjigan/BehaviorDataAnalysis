@@ -1,5 +1,4 @@
-# dat <- read.csv('~/Desktop/Lab/Experiment/DataAnalysis/BehaviorDataAnalysis/dataSet.csv', header = TRUE)
-dat <- read.csv('~/DataAnalysis/BehaviorDataAnalysis/dataSetBehavior.csv', header = TRUE)
+dat <- read.csv('~/DataAnalysis/BehaviorDataAnalysis/dataSetBhvrEEG.csv', header = TRUE)
 # str(dat) # structure of dat
 
 dat$block <- as.factor(dat$block) # converting block into category (factor/string) type
@@ -7,11 +6,15 @@ dat$block <- as.factor(dat$block) # converting block into category (factor/strin
 library(lme4) # library for linear regression modeling
 library(car) 
 
-m <- lmer(ITD ~ FMleft + FMright + block + X500Hzleft + X500Hzright + X4000Hzleft + X4000Hzright + (1|Subject), data = dat)
-m1 <- lmer(ITD ~ block + X500Hzleft + X500Hzright + X4000Hzleft + X4000Hzright + (1|Subject), data = dat) # outcome is model
+mAll <- lmer(ITD ~ FMleft + FMright + block + X500Hzleft + X500Hzright + X4000Hzleft + X4000Hzright + mag20us + mag60us + mag180us + mag540us + magAvg + magAvgExcld20us 
+             + n1lat20us + n1lat60us + n1lat180us + n1lat540us + n1latAvg + n1latAvgExcld20 
+             + p2lat20us + p2lat60us + p2lat180us + p2lat540us + p2latAvg + p2latAvgExcld20 
+             + prctMstkITD + prctMstkFMleft + prctMstkFMright + (1|Subject), data = dat)
+mAll <- lmer(ITD ~ FMleft + FMright + block + X500Hzleft + X500Hzright + X4000Hzleft + X4000Hzright + (1|Subject), data = dat)
 # the category was '500Hzleft' in original dataset, but R doesn't allow vairable starting with number
+m1 <- lmer(ITD ~ block + X500Hzleft + X500Hzright + X4000Hzleft + X4000Hzright + (1|Subject), data = dat) # outcome is model
 
-anova(m, m1) # it shows which model is better, the model listed at the bottom is the best
+anova(mAll, m1) # it shows which model is better, the model listed at the bottom is better
 
 whichWorse <- dat$FMleft < dat$FMright
 dat$FMworse[whichWorse] <- dat$FMleft[whichWorse]

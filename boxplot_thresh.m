@@ -1,5 +1,5 @@
 function boxplot_thresh(data, stimType, Ear, index) % data contain thresholds
-
+figure;
 threshSet = [];
 iteration = 0;
 numValidBlocks = 0;
@@ -9,14 +9,15 @@ for s = index
     dataTmp = dataTmp(1);
     threshSet = [threshSet, dataTmp.thresh];  %#ok<AGROW>
     for i = 1:numel(dataTmp.thresh)
-        %         nameSet{numValidBlocks + i} = dataTmp.subj;
-        nameSet{numValidBlocks + i} = num2str(iteration);
+        nameSet{numValidBlocks + i} = dataTmp.subj;
+        %nameSet{numValidBlocks + i} = num2str(iteration);
     end
     numValidBlocks = numValidBlocks + numel(dataTmp.thresh);
 end
 h = boxplot(threshSet, nameSet);
 set(h, 'LineWidth', 3);
-set(gca, 'FontSize', 30);
+set(h, 'DefaultTextFontSize', 8);
+set(gca, 'FontSize', 8);
 if strcmp(stimType, 'FM')
     ylabel('FM [dB relative to 1 Hz]');
     xlabel('Subjects')

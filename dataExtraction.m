@@ -16,24 +16,12 @@ for s = 1:numel(subjs)
     
     if strcmp(stimType, 'FM')
         dataDir = strcat(rootDir, subjID, '_behavior/', subjs(s), '_', earType);
-        if numel(dir(dataDir{1})) == 0 
-            dataDir{1} = strcat(rootDir, subjID, '_behavior/', subjID, '_', earType);
-        end
     elseif strcmp(stimType, 'ITD3down1up')
         dataDir = strcat(rootDir, subjID, '_behavior/', subjs(s), '_3down1up');
-        if numel(dir(dataDir{1})) == 0 
-            dataDir{1} = strcat(rootDir, subjID, '_behavior/', subjID, '_3down1up');
-        end
     elseif strcmp(stimType, 'ITD')
         dataDir = strcat(rootDir, subjID, '_behavior/', subjs(s));
-        if numel(dir(dataDir{1})) == 0 
-            dataDir{1} = strcat(rootDir, subjID, '_behavior/', subjID);
-        end
     elseif strcmp(stimType, 'Audiogram')
         dataDir = strcat(rootDir, subjID, '_behavior/', 'Audiogram/', subjs(s), '_', earType);
-        if numel(dir(dataDir{1})) == 0 
-            dataDir{1} = strcat(rootDir, subjID, '_behavior/', 'Audiogram/', subjID, '_', earType);
-        end
         freqs  = [0.5, 1, 2, 4, 8]*1000; % CHANGE AS NEEDED
         avgThresh = [8.6, 2.7, 0.5, 0.1, 23.1]; % CHANGE AS NEEDED
     end
@@ -71,6 +59,7 @@ for s = 1:numel(subjs)
     else
         % taking log to make within individual variability look smaller
         result = struct('subj', subjs(s),'thresh', 20*log10(thresholds), 'parmtrList', parmtrList);
+        % result = struct('subj', subjs(s),'thresh', thresholds, 'parmtrList', parmtrList);
     end
     dataArray{s} = result;
 end
