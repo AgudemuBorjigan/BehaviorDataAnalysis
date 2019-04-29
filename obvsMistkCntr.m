@@ -1,4 +1,4 @@
-function [perct, perctTl] = obvsMistkCntr(data, stim)
+function perct = obvsMistkCntr(data, stim)
 dataTmp = data;
 trialNum = 0;
 nMistkTl = 0;

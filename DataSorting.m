@@ -1,12 +1,72 @@
 OS = 'Ubuntu';
+rootDir = '/media/agudemu/Storage/Data/Behavior/';
+subjs_ITD = subjNames(strcat(rootDir, 'ITD'));
+rootDir = '/media/agudemu/Storage/Data/Behavior/';
+subjs_FM = subjNames(strcat(rootDir, 'FM'));
+rootDir = '/media/agudemu/Storage/Data/Behavior/';
+subjs_Audiogram = subjNames(strcat(rootDir, 'Audiogram'));
+rootDir = '/media/agudemu/Storage/Data/EEG/';
+subjs_ITD_EEG = subjNames(strcat(rootDir, 'ITD'));
+rootDir = '/media/agudemu/Storage/Data/EEG/';
+subjs_FFR = subjNames(strcat(rootDir, 'FFR'));
+rootDir = '/media/agudemu/Storage/Data/Behavior/';
+subjs_HI = audiogramPop(rootDir, OS);
+subjs_OD = {'S216', 'S218'};
 
-subjs_EEG = {'S025', 'S031', 'S046', 'S117', 'S123', 'S127', 'S128', 'S132', 'S133', ...
-    'S149', 'S051', 'S183', 'S187', 'S189', 'S193', 'S195', 'S196', 'S043', 'S072', 'S075', 'S078', ...
-    'S135', 'S194', 'S197', 'S199', 'S191', 'S084'}; 
-subjs = {'S025', 'S031', 'S046', 'S117', 'S123', 'S127', 'S128', 'S132', 'S133', 'S135', 'S143', ...
-    'S149', 'S051', 'S183', 'S185', 'S187', 'S189', 'S192', 'S193', 'S194', 'S195', 'S196', 'S197', 'S199',...
-    'S043', 'S072', 'S075', 'S078', 'S084', 'S191'};  
-% removed 'S173' since it doesn't have audiogram
+subjs_Audiogram_FM = intersect(subjs_Audiogram, subjs_FM);
+subjs_behavior = intersect(subjs_Audiogram_FM, subjs_ITD);
+subjs_EEG_ITD_behavior = intersect(subjs_behavior, subjs_ITD_EEG); 
+subjs_EEG_ITD_behavior_HI = intersect(subjs_EEG_ITD_behavior, subjs_HI);
+subjs_EEG_ITD_behavior_NH = setdiff(subjs_EEG_ITD_behavior, subjs_EEG_ITD_behavior_HI);
+subjs_All = intersect(subjs_EEG_ITD_behavior_NH, subjs_FFR);   
+
+%% Behavior & EEG (ITD&FFR) dataset
+fid = fopen('dataSetBehaviorEEG_All.csv', 'w');
+fprintf(fid, 'Subject, ITD, FMleft, FMright, 500Hzleft, 500Hzright, block, mistakeITD, mistakeFMLeft, mistakeFMRight, FFRmag1K, ERPn1lat180, ERPp2lat180, ERPn1lat60, ERPp2lat60, ERPn1lat540, ERPp2lat540, ERPn1latAvgNo20, ERPp2latAvgNo20\n');
+%mistakeITD, mistakeFMleft, mistakeFMright
+%mag20us, mag60us, mag180us, mag540us, magAvg, magAvgExcld20us, n1lat20us, n1lat60us, n1lat180us, n1lat540us, n1latAvg, n1latAvgExcld20, p2lat20us, p2lat60us, p2lat180us, p2lat540us, p2latAvg, p2latAvgExcld20, itc20, itc60, itc180, itc540, itcAvg, itcAvgExd20, itclat20, itclat60, itclat180, itclat540, itclatAvg, itclatAvgExd20, itc20left, itc60left, itc180left, itc540left, itcAvgleft, itcAvgExd20left, itclat20left, itclat60left, itclat180left, itclat540left, itclatAvgleft, itclatAvgExd20left, itc20right, itc60right, itc180right, itc540right, itcAvgright, itcAvgExd20right, itclat20right, itclat60right, itclat180right, itclat540right, itclatAvgright, itclatAvgExd20right
+numSubj = numel(subjs_All);
+dataArrayHL_left = dataExtraction(subjs_All, OS, 'Audiogram', 'LeftEar');
+dataArrayHL_right = dataExtraction(subjs_All, OS, 'Audiogram', 'RightEar');
+subj = cell(1, 1);
+load('FFR_mag1K_NH'); % variable: FFR_mag1K_NH
+load('ERP_n1lat180_NH');% variable: erp_n1lat180
+load('ERP_p2lat180_NH');% variable: erp_p2lat180
+load('ERP_p2lat60_NH');% variable: erp_p2lat60
+load('ERP_n1lat60_NH');% variable: erp_n1lat60
+load('ERP_p2lat540_NH');% variable: erp_p2lat540
+load('ERP_n1lat540_NH');% variable: erp_n1lat540
+load('ERP_p2latAvgNo20_NH');% variable: erp_p2latAvgNo20
+load('ERP_n1latAvgNo20_NH');% variable: erp_n1latAvgNo20
+for s = 1:numSubj
+    subj{1} = subjs_All{s};
+    % ITD
+    ITDs_tmp = dataExtraction(subj, OS, 'ITD3down1up', 'BothEar');
+    ITDs = ITDs_tmp{1}.thresh;
+    percentITD = obvsMistkCntr(ITDs_tmp{1}, 'ITD');
+    % FM left
+    FMs_Left_tmp = dataExtraction(subj, OS, 'FM', 'LeftEar');
+    FMleft_tmp = FMs_Left_tmp{1}.thresh;
+    FMleft = median(FMleft_tmp);
+    percentFM_left = obvsMistkCntr(FMs_Left_tmp{1}, 'FM');
+    % FM right
+    FMs_Right_tmp = dataExtraction(subj, OS, 'FM', 'RightEar');
+    FMright_tmp = FMs_Right_tmp{1}.thresh;
+    FMright = median(FMright_tmp);
+    percentFM_right = obvsMistkCntr(FMs_Right_tmp{1}, 'FM');
+    % Audiogram
+    HLleft = dataArrayHL_left{s}.thresh;
+    HLright = dataArrayHL_right{s}.thresh;
+    freqs = dataArrayHL_left{s}.freqs;
+    for b = 1:numel(ITDs)
+        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
+            subjs_All{s}, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500), b, percentITD, percentFM_left, percentFM_right, ...
+            FFR_mag1K_NH(s), ...
+            erp_n1lat180(s), erp_p2lat180(s), erp_n1lat60(s), erp_p2lat60(s), erp_n1lat540(s), erp_p2lat540(s), erp_n1latAvgNo20(s), erp_p2latAvgNo20(s));
+        fprintf(fid, '\n');
+    end
+    fprintf(fid, '\n');
+end
 %% EEG data in the order of subjects listed in subjs_EEG
 % ITC, average of auditory channels
 load('ITC20'); load('ITC60'); load('ITC180'); load('ITC540'); load('ITCavg'); load('ITCavgExd20');
@@ -23,47 +83,25 @@ load('ERP_N1Lat_20'); load('ERP_N1Lat_60'); load('ERP_N1Lat_180'); load('ERP_N1L
 load('ERP_P2Lat_20'); load('ERP_P2Lat_60'); load('ERP_P2Lat_180'); load('ERP_P2Lat_540'); load('ERP_P2Lat_Avg'); load('ERP_P2Lat_AvgExd20');
 % percent of easy mistakes
 load('PercentMistakesFMleft'); load('PercentMistakesFMright'); load('PercentMistakesITD');
-%% Behavior & EEG dataset
-fid = fopen('dataSetBhvrEEG.csv', 'w');
-fprintf(fid, 'Subject, ITD, FMleft, FMright, 500Hzleft, 500Hzright, 4000Hzleft, 4000Hzright, block, prctMstkITD, prctMstkFMleft, prctMstkFMright, mag20us, mag60us, mag180us, mag540us, magAvg, magAvgExcld20us, n1lat20us, n1lat60us, n1lat180us, n1lat540us, n1latAvg, n1latAvgExcld20, p2lat20us, p2lat60us, p2lat180us, p2lat540us, p2latAvg, p2latAvgExcld20, itc20, itc60, itc180, itc540, itcAvg, itcAvgExd20, itclat20, itclat60, itclat180, itclat540, itclatAvg, itclatAvgExd20, itc20left, itc60left, itc180left, itc540left, itcAvgleft, itcAvgExd20left, itclat20left, itclat60left, itclat180left, itclat540left, itclatAvgleft, itclatAvgExd20left, itc20right, itc60right, itc180right, itc540right, itcAvgright, itcAvgExd20right, itclat20right, itclat60right, itclat180right, itclat540right, itclatAvgright, itclatAvgExd20right\n');
 
-numSubj = numel(subjs_EEG);
-dataArrayITD = dataExtraction(subjs_EEG, OS, 'ITD3down1up', 'BothEar');
-dataArrayFMleft = dataExtraction(subjs_EEG, OS, 'FM', 'LeftEar');
-dataArrayFMright = dataExtraction(subjs_EEG, OS, 'FM', 'RightEar');
-dataArrayHL_left = dataExtraction(subjs_EEG, OS, 'Audiogram', 'LeftEar');
-dataArrayHL_right = dataExtraction(subjs_EEG, OS, 'Audiogram', 'RightEar');
-
-
-for s = 1:numSubj
-    ITDs = dataArrayITD{s}.thresh;
-    ITDs = mean(ITDs);
-    FMleftTmp = dataArrayFMleft{s};
-    FMleftTmp = FMleftTmp(1);
-    FMleft = mean(FMleftTmp.thresh);
-    FMrightTmp = dataArrayFMright{s};
-    FMrightTmp = FMrightTmp(1);
-    FMright = mean(FMrightTmp.thresh);
-    HLleft = dataArrayHL_left{s}.thresh;
-    HLright = dataArrayHL_right{s}.thresh;
-    freqs = dataArrayHL_left{s}.freqs;
-    for b = 1:numel(ITDs)
-        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, ', ...
-            subjs_EEG{s}, ITDs, FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500), HLleft(freqs == 4000), HLright(freqs == 4000), b, ...
-            prctMstkITD(s), prctMstkFMleft(s), prctMstkFMright(s),...
-            erp20(s), erp60(s), erp180(s), erp540(s), erpAvg(s), erpAvgExd20(s), ...
-            n1lat20(s), n1lat60(s), n1lat180(s), n1lat540(s), n1latAvg(s), n1latAvgExd20(s), ...
-            p2lat20(s), p2lat60(s), p2lat180(s), p2lat540(s), p2latAvg(s), p2latAvgExd20(s), ...
-            ITC20(s), ITC60(s), ITC180(s), ITC540(s), ITCavg(s), ITCavgExd20(s), ...
-            ITClat20(s), ITClat60(s), ITClat180(s), ITClat540(s), ITClatAvg(s), ITClatAvgExd20(s), ...
-            ITC20left(s), ITC60left(s), ITC180left(s), ITC540left(s), ITCavgleft(s), ITCavgExd20left(s), ...
-            ITClat20left(s), ITClat60left(s), ITClat180left(s), ITClat540left(s), ITClatAvgleft(s), ITClatAvgExd20left(s), ...
-            ITC20right(s), ITC60right(s), ITC180right(s), ITC540right(s), ITCavgright(s), ITCavgExd20right(s), ...
-            ITClat20right(s), ITClat60right(s), ITClat180right(s), ITClat540right(s), ITClatAvgright(s), ITClatAvgExd20right(s));
-        fprintf(fid, '\n');
-    end
+%% FFR_ITD_FM
+subjs_EEG_FFR = {'S031', 'S043', 'S051', 'S075', 'S117', 'S128', 'S133', 'S149', 'S187', 'S191', 'S195', 'S196', 'S197', 'S072', 'S127', 'S132', 'S194'};% S185 % exlcuded S078, S123 (empty arrays were returned), S199 (memory problem)
+fid = fopen('dataSetFFR_ITD_FM.csv', 'w');
+fprintf(fid, 'subject, FFR_1KHz, ITD, FM, n1lat180, p2lat180, ERP180\n');
+numSubj = numel(subjs_EEG_FFR);
+threshMeanITD_FFR = meanITD_FM(subjs_EEG_FFR, OS, 'ITD3down1up', 'mean');
+threshMeanFMs_FFR = meanITD_FM(subjs_EEG_FFR, OS, 'FM', 'mean');
+threshMeanFM_FFR = (threshMeanFMs_FFR{1} + threshMeanFMs_FFR{2})/2;
+FFR_mag1000 = [3.13e-05, 9.9e-6, 2.66e-5, 1.51e-5, 3.55e-5, 1.16e-5, 2.79e-5, 6.7e-6, 3.7e-5, 9.8e-6, 2.02e-5, 1.1e-5, 5.17e-5, 1.11e-5, 1.57e-5, 1.12e-5, 1.66e-5];% 7.71e-5
+ERP_n1lat180 = [0.1277, 0.1292, 0.1216, 0.1309, 0.1509, 0.1228, 0.1304, 0.1262, 0.1472, 0.1238, 0.1262, 0.1267, 0.1262, 0.1536, 0.1438, 0.1279, 0.1267];% 0.1499
+ERP_p2lat180 = [0.2131, 0.2178, 0.2092, 0.1929, 0.2136, 0.2339, 0.2087, 0.2126, 0.2102, 0.2124, 0.2104, 0.1919, 0.2129, 0.2153, 0.2146, 0.2112, 0.1824];% 0.2129
+ERP180 = [1.022, 1.046, 0.927, 0.533, 1.423, 0.679, 1.084, 1.336, 1.085, 0.891, 1.419, 1.07, 1.35, 2.18, 0.998, 0.941, 1.038];%, 0.465];
+for i = 1:numSubj
+    fprintf(fid, '%s, %f, %f, %f, %f, %f, %f', subjs_EEG_FFR{i}, FFR_mag1000(i), threshMeanITD_FFR(i), threshMeanFM_FFR(i), ...
+        ERP_n1lat180(i), ERP_p2lat180(i), ERP180(i));
     fprintf(fid, '\n');
 end
+fprintf(fid, '\n');
 %% ploting individual EEG response (itc) across conditions
 % plot([20, 60, 180, 540], [mean(itc_20us), mean(itc_60us), mean(itc_180us), mean(itc_540us)]...
 %    ,'-ro', 'LineWidth', 12, 'MarkerSize', 20);

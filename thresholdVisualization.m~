@@ -1,4 +1,4 @@
-%% ITD3down1up
+
 OS = 'Ubuntu';
 rootDir = '/media/agudemu/Storage/Data/Behavior/';
 % Note that different day testing needs to be added right after its previous
@@ -21,7 +21,7 @@ ITD_mean_HI = meanITD_FM(subjs_HI_ITD, OS, 'ITD3down1up', 'mean');
 
 % Response track of one subject
 responseTrack(dataArrayITD_NH{35}, 'ITD', 'Both');
-perct = obvsMistkCntr(dataArrayITD_NH{1}, 'ITD');
+[perct, percTl] = obvsMistkCntr(dataArrayITD_NH{1}, 'ITD');
 % Box plot
 index = indexFromSorting(subjs_NH_ITD, dataArrayITD_NH);
 boxplot_thresh(dataArrayITD_NH, 'ITD', 'BothEar', index);
@@ -71,8 +71,8 @@ FM_mean_OD_avg = (FM_mean_OD_right + FM_mean_OD_left)/2;
 % Response track of one subject
 responseTrack(dataArrayFMLeft_NH{16}, 'FM', 'Left');
 responseTrack(dataArrayFMRight_NH{1}, 'FM', 'Right');
-perctFMl = obvsMistkCntr(dataArrayFMLeft_NH{1}, 'FM');
-perctFMr = obvsMistkCntr(dataArrayFMRight_NH{1}, 'FM');
+[perctFMl, percTlFMl] = obvsMistkCntr(dataArrayFMLeft_NH{1}, 'FM');
+[perctFMr, percTlFMr] = obvsMistkCntr(dataArrayFMRight_NH{1}, 'FM');
 
 % Box plot for all NH
 index = indexFromSorting(subjs_NH_FM, dataArrayFMLeft_NH);

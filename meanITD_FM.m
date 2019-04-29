@@ -23,7 +23,7 @@ if strcmp(stimulus, 'ITD3down1up')
             threshMean(s) = median(dataTmp.thresh);
         end
     end
-else
+elseif strcmp(stimulus, 'FM')
     % Extracting mean FM thresholds
     dataArrayFMLeft = dataExtraction(subjs, OS, 'FM', 'LeftEar');
     dataArrayFMRight = dataExtraction(subjs, OS, 'FM', 'RightEar');

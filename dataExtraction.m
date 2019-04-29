@@ -1,12 +1,8 @@
 function dataArray = dataExtraction(subjs, OS, stimType, earType)
 dataArray = cell(1, numel(subjs));
+problematic = zeros(1, numel(subjs)); % CHECK IF THERE IS NEGATIVE FDEV VALUES
 for s = 1:numel(subjs)
     subjID = subjs{s};
-    % data for different day testing is usually put after the same subject,
-    % hence "DD" has to be disgarded
-    if strcmp(subjID(end-1:end), 'DD')
-        subjID = subjID(1:end-2);
-    end
     % CHANGE AS NEEDE
     if strcmp(OS, 'Mac') 
         rootDir = '/Users/baoagudemu1/Desktop/Lab/Experiment/DataAnalysis/Data/';
@@ -15,50 +11,51 @@ for s = 1:numel(subjs)
     end
     
     if strcmp(stimType, 'FM')
-        dataDir = strcat(rootDir, subjID, '_behavior/', subjs(s), '_', earType);
+        dataDir = strcat(rootDir, 'FM/', subjID, '/', subjID, '_', earType);
     elseif strcmp(stimType, 'ITD3down1up')
-        dataDir = strcat(rootDir, subjID, '_behavior/', subjs(s), '_3down1up');
-    elseif strcmp(stimType, 'ITD')
-        dataDir = strcat(rootDir, subjID, '_behavior/', subjs(s));
+        dataDir = strcat(rootDir, 'ITD/', subjID, '/',  subjID, '_3down1up');
     elseif strcmp(stimType, 'Audiogram')
-        dataDir = strcat(rootDir, subjID, '_behavior/', 'Audiogram/', subjs(s), '_', earType);
-        freqs  = [0.5, 1, 2, 4, 8]*1000; % CHANGE AS NEEDED
-        avgThresh = [8.6, 2.7, 0.5, 0.1, 23.1]; % CHANGE AS NEEDED
+        dataDir = strcat(rootDir, 'Audiogram/', subjID, '/', subjID, '_', earType);
+        freqs  = [0.5, 1, 2, 4, 8]*1000; 
+        avgThresh = [8.6, 2.7, 0.5, 0.1, 23.1]; 
     end
     
-    allFiles = dir(strcat(dataDir{1}, '/*.mat')); % this makes sure hidden files are not included
+    allFiles = dir(strcat(dataDir, '/*.mat')); % this makes sure hidden files are not included
+    blockNum = numel(allFiles);
     
     thresholds = zeros(1, numel(allFiles));
     parmtrList = cell(1, numel(allFiles));
+    responseList = cell(1, numel(allFiles));
     for i = 1:numel(allFiles)
         if strcmp(stimType, 'Audiogram')
-            fSearch = strcat(dataDir, '/', subjs(s), '_', earType, '_', num2str(freqs(i)), '*.mat');
-            if numel(dir(fSearch{1})) == 0
-                fSearch = strcat(dataDir, '/', subjID, '_', earType, '_', num2str(freqs(i)), '*.mat');
-            end
-            fnames = dir(fSearch{1});
-            ftmp = fnames(1);
+            fSearch = strcat(dataDir, '/', subjID, '_', earType, '_', num2str(freqs(i)), '*.mat');
+            fnames = dir(fSearch);
+            ftmp = fnames;
             fileName = ftmp.name;
         else
             fileName = allFiles(i).name;
         end
         fileDir = strcat(dataDir, '/', fileName);
-        load(fileDir{1});
-        if strcmp(stimType, 'ITD') || strcmp(stimType, 'ITD3down1up')
+        load(fileDir);
+        if strcmp(stimType, 'ITD3down1up')
             thresholds(i) = round(thresh*1e6, 1);
             parmtrList{i} = round(ITDList*1e6, 1);
         elseif strcmp(stimType, 'FM')
             thresholds(i) = thresh;
             parmtrList{i} = fdevList;
+            if sum(fdevList<0)
+                problematic(s) = 1;
+            end
         elseif strcmp(stimType, 'Audiogram')
             thresholds(i) = thresh - avgThresh(i);
         end
+        responseList{i} = respList;
     end
     if strcmp(stimType, 'Audiogram')
-        result = struct('subj', subjs(s),'thresh', thresholds, 'freqs', freqs);
+        result = struct('subj', subjs(s),'thresh', thresholds, 'freqs', freqs, 'blockNum', blockNum);
     else
         % taking log to make within individual variability look smaller
-        result = struct('subj', subjs(s),'thresh', 20*log10(thresholds), 'parmtrList', parmtrList);
+        result = struct('subj', subjs(s),'thresh', 20*log10(thresholds), 'parmtrList', parmtrList, 'resList', responseList, 'blockNum', blockNum);
         % result = struct('subj', subjs(s),'thresh', thresholds, 'parmtrList', parmtrList);
     end
     dataArray{s} = result;

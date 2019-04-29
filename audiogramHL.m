@@ -1,5 +1,5 @@
-datadir = '/media/agudemu/Storage/Data/Behavior/S084_behavior/Audiogram/';
-cd '/media/agudemu/Storage/Data/Behavior/S084_behavior/Audiogram/'
+datadir = '/media/agudemu/Storage/Data/Behavior/Audiogram/S053/';
+cd '/media/agudemu/Storage/Data/Behavior/Audiogram/S053/'
 %datadir = '/Users/baoagudemu1/Desktop/Lab/Experiment/DataAnalysis/Data/S199_behavior/Audiogram/';
 %cd '/Users/baoagudemu1/Desktop/Lab/Experiment/DataAnalysis/Data/S199_behavior/Audiogram/';
 subjs = dir(strcat(datadir, '*Ear'));
