@@ -22,7 +22,7 @@ subjs_All = intersect(subjs_EEG_ITD_behavior_NH, subjs_FFR);
 
 %% Behavior & EEG (ITD&FFR) dataset
 fid = fopen('dataSetBehaviorEEG_All.csv', 'w');
-fprintf(fid, 'Subject, ITD, FMleft, FMright, 500Hzleft, 500Hzright, block, mistakeITD, mistakeFMLeft, mistakeFMRight, FFRmag1K, ERPn1lat180, ERPp2lat180, ERPn1lat60, ERPp2lat60, ERPn1lat540, ERPp2lat540, ERPn1latAvgNo20, ERPp2latAvgNo20\n');
+fprintf(fid, 'Subject, ITDmean, ITDmedian, ITDmin, ITDmax, FMleft, FMright, 500Hzleft, 500Hzright, block, mistakeITD, mistakeFMLeft, mistakeFMRight, FFRmag1K, ERPn1lat180, ERPp2lat180, ERPn1lat60, ERPp2lat60, ERPn1lat540, ERPp2lat540, ERPn1latAvgNo20, ERPp2latAvgNo20\n');
 %mistakeITD, mistakeFMleft, mistakeFMright
 %mag20us, mag60us, mag180us, mag540us, magAvg, magAvgExcld20us, n1lat20us, n1lat60us, n1lat180us, n1lat540us, n1latAvg, n1latAvgExcld20, p2lat20us, p2lat60us, p2lat180us, p2lat540us, p2latAvg, p2latAvgExcld20, itc20, itc60, itc180, itc540, itcAvg, itcAvgExd20, itclat20, itclat60, itclat180, itclat540, itclatAvg, itclatAvgExd20, itc20left, itc60left, itc180left, itc540left, itcAvgleft, itcAvgExd20left, itclat20left, itclat60left, itclat180left, itclat540left, itclatAvgleft, itclatAvgExd20left, itc20right, itc60right, itc180right, itc540right, itcAvgright, itcAvgExd20right, itclat20right, itclat60right, itclat180right, itclat540right, itclatAvgright, itclatAvgExd20right
 numSubj = numel(subjs_All);
@@ -43,6 +43,10 @@ for s = 1:numSubj
     % ITD
     ITDs_tmp = dataExtraction(subj, OS, 'ITD3down1up', 'BothEar');
     ITDs = ITDs_tmp{1}.thresh;
+    ITD_mean = mean(ITDs, 2);
+    ITD_median = median(ITDs);
+    ITD_max = max(ITDs);
+    ITD_min = min(ITDs);
     percentITD = obvsMistkCntr(ITDs_tmp{1}, 'ITD');
     % FM left
     FMs_Left_tmp = dataExtraction(subj, OS, 'FM', 'LeftEar');
@@ -59,8 +63,8 @@ for s = 1:numSubj
     HLright = dataArrayHL_right{s}.thresh;
     freqs = dataArrayHL_left{s}.freqs;
     for b = 1:numel(ITDs)
-        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
-            subjs_All{s}, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500), b, percentITD, percentFM_left, percentFM_right, ...
+        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
+            subjs_All{s}, ITD_mean, ITD_median, ITD_min, ITD_max, FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500), b, percentITD, percentFM_left, percentFM_right, ...
             FFR_mag1K_NH(s), ...
             erp_n1lat180(s), erp_p2lat180(s), erp_n1lat60(s), erp_p2lat60(s), erp_n1lat540(s), erp_p2lat540(s), erp_n1latAvgNo20(s), erp_p2latAvgNo20(s));
         fprintf(fid, '\n');

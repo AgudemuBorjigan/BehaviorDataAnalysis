@@ -42,7 +42,10 @@ for s = 1:numSubj
     subj{1} = subjs_All{s};
     % ITD
     ITDs_tmp = dataExtraction(subj, OS, 'ITD3down1up', 'BothEar');
-    ITDs = ITDs_tmp{1}.thresh;
+    ITD_mean = mean(ITDs_tmp{1}.thresh);
+    ITD_median = median(ITDs_tmp{1}.thresh);
+    ITD_max = max(ITDs_tmp{1}.thresh);
+    ITD_min = min(ITDs_tmp{1}.thresh);
     percentITD = obvsMistkCntr(ITDs_tmp{1}, 'ITD');
     % FM left
     FMs_Left_tmp = dataExtraction(subj, OS, 'FM', 'LeftEar');
@@ -60,7 +63,7 @@ for s = 1:numSubj
     freqs = dataArrayHL_left{s}.freqs;
     for b = 1:numel(ITDs)
         fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
-            subjs_All{s}, ITDs(b), FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500), b, percentITD, percentFM_left, percentFM_right, ...
+            subjs_All{s}, ITD_mean, ITD_median, ITD_, FMleft, FMright, HLleft(freqs == 500), HLright(freqs == 500), b, percentITD, percentFM_left, percentFM_right, ...
             FFR_mag1K_NH(s), ...
             erp_n1lat180(s), erp_p2lat180(s), erp_n1lat60(s), erp_p2lat60(s), erp_n1lat540(s), erp_p2lat540(s), erp_n1latAvgNo20(s), erp_p2latAvgNo20(s));
         fprintf(fid, '\n');
