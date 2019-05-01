@@ -71,6 +71,47 @@ for s = 1:numSubj
     end
     fprintf(fid, '\n');
 end
+
+% %% Behavior FM and ITD
+% fid = fopen('dataSetBehavior.csv', 'w');
+% fprintf(fid, 'Subject, ITDmean, ITDmedian, ITDmin, ITDmax, FMleftMean, FMleftMedian, FMleftMin, FMleftMax, FMrightMean, FMrightMedian, FMrightMin, FMrightMax, mistakeITD, mistakeFMLeft, mistakeFMRight\n');
+% numSubj = numel(subjs_behavior);
+% 
+% for s = 1:numSubj
+%     subj{1} = subjs_behavior{s};
+%     % ITD
+%     ITDs_tmp = dataExtraction(subj, OS, 'ITD3down1up', 'BothEar');
+%     ITDs = ITDs_tmp{1}.thresh;
+%     ITD_mean = mean(ITDs, 2);
+%     ITD_median = median(ITDs);
+%     ITD_max = max(ITDs);
+%     ITD_min = min(ITDs);
+%     percentITD = obvsMistkCntr(ITDs_tmp{1}, 'ITD');
+%     % FM left
+%     FMs_Left_tmp = dataExtraction(subj, OS, 'FM', 'LeftEar');
+%     FMleft_tmp = FMs_Left_tmp{1}.thresh;
+%     FMleftMedian = median(FMleft_tmp);
+%     FMleftMean = mean(FMleft_tmp);
+%     FMleftMin = min(FMleft_tmp);
+%     FMleftMax = max(FMleft_tmp);
+%     percentFM_left = obvsMistkCntr(FMs_Left_tmp{1}, 'FM');
+%     % FM right
+%     FMs_Right_tmp = dataExtraction(subj, OS, 'FM', 'RightEar');
+%     FMright_tmp = FMs_Right_tmp{1}.thresh;
+%     FMrightMedian = median(FMright_tmp);
+%     FMrightMean = mean(FMright_tmp);
+%     FMrightMin = min(FMright_tmp);
+%     FMrightMax = max(FMright_tmp);
+%     percentFM_right = obvsMistkCntr(FMs_Right_tmp{1}, 'FM');
+%     for b = 1
+%         fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
+%             subjs_behavior{s}, ITD_mean, ITD_median, ITD_min, ITD_max, FMleftMean, FMleftMedian, FMleftMin, FMleftMax, FMrightMean, FMrightMedian, FMrightMin, FMrightMax,...
+%             percentITD, percentFM_left, percentFM_right);
+%         fprintf(fid, '\n');
+%     end
+%     fprintf(fid, '\n');
+% end
+
 %% EEG data in the order of subjects listed in subjs_EEG
 % ITC, average of auditory channels
 load('ITC20'); load('ITC60'); load('ITC180'); load('ITC540'); load('ITCavg'); load('ITCavgExd20');
