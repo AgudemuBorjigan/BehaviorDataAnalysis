@@ -34,7 +34,7 @@ elseif strcmp(stimType, 'ITD')
     xlabel('Subjects')
     title('ITD thresholds for all subjects');
     
-    ax1 = axes('Position', [.16 .60 .25 .25]);
+    ax1 = axes('Position', [.16 .61 .25 .25]);
     box on;
     responseTrack(data{16}, 'ITD', 'Left');
 end
