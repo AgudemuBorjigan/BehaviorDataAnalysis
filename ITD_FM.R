@@ -9,7 +9,10 @@ library(ggplot2)
 
 dat$FMmedian <- (dat$FMleftMedian + dat$FMrightMedian)/2
 
-m_behavior <- lm(ITDmax ~ FMmedian, data = dat) 
+dat$HL500 <- (dat$HL500left + dat$HL500right)/2
+dat$HL500diff <- abs(dat$HL500left - dat$HL500right)
+
+m_behavior <- lm(ITDmax ~ FMmedian + HL500diff, data = dat) 
 Anova(m_behavior)
 
 p_behavior <- ggplot(aes(x = FMmedian, y = ITDmax), data = dat) + theme_classic() + geom_point(size = 3) + geom_smooth(method = "lm", col = "red", se = TRUE) 
@@ -31,3 +34,4 @@ Anova(m_behavior_res)
 
 p_behavior_res <- ggplot(aes(x = residFMmedian, y = residITD), data = dat) + theme_classic() + geom_point(size = 3) + geom_smooth(method = "lm", col = "red", se = TRUE) 
 p_behavior_res + xlab('FM [dB re: 1 Hz]') + ylab('ITD [dB re: 1 us]') + ggtitle('ITD vs FM thresholds (with attention score factored out)') + annotate("text", x = 5, y = -4, size =8, label = paste("R = ", signif(sqrt(summary(m_behavior_res)$r.squared), 3),  " \nP =",signif(summary(m_behavior_res)$coef[2,4], 3), "\n n = 36")) + theme_update(plot.title = element_text(hjust = 0.5)) + theme(text = element_text(size = 24))
+
