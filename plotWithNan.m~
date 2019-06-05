@@ -1,0 +1,5 @@
+function h = plotWithNan(a, b)
+i = ~isnan(a) & ~isnan(b);
+h = plot(a(i), b(i), '--s', 'LineWidth', 1, 'MarkerSize', 4, 'Color', [0.2, 0.2, 0.2]);
+set(h, 'markerfacecolor', get(h_avg, 'color'));
+end
