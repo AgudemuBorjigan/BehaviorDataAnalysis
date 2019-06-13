@@ -1,111 +1,19 @@
 OS = 'Ubuntu';
-
-rootDir = '/media/agudemu/Storage/Data/Behavior/';
-subjs_Audiogram = subjNames(strcat(rootDir, 'Audiogram'));
-rootDir = '/media/agudemu/Storage/Data/Behavior/';
-subjs_HI = audiogramPop(rootDir, OS);
-subjs_NH = setdiff(subjs_Audiogram, subjs_HI);
-subjs_OD = {'S216', 'S218'};
-
-rootDir = '/media/agudemu/Storage/Data/Behavior/';
-subjs_FM = subjNames(strcat(rootDir, 'FM'));
-subjs_FM = intersect(subjs_FM, subjs_NH);
-
-rootDir = '/media/agudemu/Storage/Data/Behavior/';
-subjs_ITD = subjNames(strcat(rootDir, 'ITD'));
-subjs_ITD = intersect(subjs_ITD, subjs_NH);
-
-subjs_behavior = intersect(subjs_FM, subjs_ITD);
+subjs_behavior = subjs_behavior_set;
 
 rootDir = '/media/agudemu/Storage/Data/EEG/';
 subjs_ITD_EEG = subjNames(strcat(rootDir, 'ITD'));
+% Note that subjs_behavior doesn't contain some subjects who did ITDs but
+% not FMs
+subjs_behavior_EEG_ITD = intersect(subjs_ITD_EEG, subjs_behavior);
 
 rootDir = '/media/agudemu/Storage/Data/EEG/';
 subjs_FFR = subjNames(strcat(rootDir, 'FFR'));
+subjs_behavior_FFR = intersect(subjs_behavior_EEG_ITD, subjs_FFR);   
 
-
-subjs_EEG_ITD_behavior = intersect(subjs_ITD_EEG, subjs_ITD);
-
-subjs_All = intersect(subjs_EEG_ITD_behavior, subjs_FFR);   
-
-%% Behavior & EEG (ITD) dataset
-fid = fopen('dataSetBehaviorEEG_ITD.csv', 'w');
-fprintf(fid, 'Subject, ITD, FMleft, FMright, mistakeITD, mistakeFMLeft, mistakeFMRight, ERPn1lat180, ERPp2lat180\n');
-numSubj = numel(subjs_EEG_ITD_behavior);
-load('ERP_n1lat180_NH_EEG_ITD');% variable: erp_n1lat180
-load('ERP_p2lat180_NH_EEG_ITD');% variable: erp_p2lat180
-for s = 1:numSubj
-    subj{1} = subjs_EEG_ITD_behavior{s};
-    % ITD
-    ITDs_tmp = dataExtraction(subj, OS, 'ITD3down1up', 'BothEar');
-    ITDs = ITDs_tmp{1}.thresh;
-    ITD_mean = mean(ITDs, 2);
-    percentITD = obvsMistkCntr(ITDs_tmp{1}, 'ITD');
-    % FM left
-    FMs_Left_tmp = dataExtraction(subj, OS, 'FM', 'LeftEar');
-    FMleft_tmp = FMs_Left_tmp{1}.thresh;
-    FMleftMean = mean(FMleft_tmp);
-    percentFM_left = obvsMistkCntr(FMs_Left_tmp{1}, 'FM');
-    % FM right
-    FMs_Right_tmp = dataExtraction(subj, OS, 'FM', 'RightEar');
-    FMright_tmp = FMs_Right_tmp{1}.thresh;
-    FMrightMean = mean(FMright_tmp);
-    percentFM_right = obvsMistkCntr(FMs_Right_tmp{1}, 'FM');
-    for b = 1
-        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f', ...
-            subj{1}, ITD_mean, FMleftMean, FMrightMean, percentITD, percentFM_left, percentFM_right, ...
-            erp_n1lat180(s), erp_p2lat180(s));
-        fprintf(fid, '\n');
-    end
-    fprintf(fid, '\n');
-end
-
-%% Behavior & EEG (ITD&FFR) dataset
-fid = fopen('dataSetBehaviorEEG_All.csv', 'w');
-fprintf(fid, 'Subject, ITDmean, FMleft, FMright, mistakeITD, mistakeFMLeft, mistakeFMRight, FFRmag1K, FFRmag500, FFRplv500, FFRplv1K, n1lat180, p2lat180\n');
-
-load('FFR_mag1K_NH'); load('FFR_mag1K_good');
-load('FFR_mag1K_NH_Cz'); load('FFR_mag1K_good_Cz');
-load('FFR_mag500_NH_Cz'); load('FFR_mag500_good_Cz');
-load('FFR_plv500_NH_Cz'); load('FFR_plv500_good_Cz');
-load('FFR_plv1K_NH_Cz'); load('FFR_plv1K_good_Cz');
-load('ERP_n1lat180_NH.mat'); load('ERP_n1lat180_good');
-load('ERP_p2lat180_NH.mat'); load('ERP_p2lat180_good');
-load('goodSubjs');
-numSubj = numel(subjs_All);
-subj = cell(1, 1);
-
-for s = 1:numSubj
-    subj{1} = subjs_All{s};
-    % ITD
-    ITDs_tmp = dataExtraction(subj, OS, 'ITD3down1up', 'BothEar');
-    ITDs = ITDs_tmp{1}.thresh;
-    ITD_mean = mean(ITDs, 2);
-    percentITD = obvsMistkCntr(ITDs_tmp{1}, 'ITD');
-    % FM left
-    FMs_Left_tmp = dataExtraction(subj, OS, 'FM', 'LeftEar');
-    FMleft_tmp = FMs_Left_tmp{1}.thresh;
-    FMleft = mean(FMleft_tmp);
-    percentFM_left = obvsMistkCntr(FMs_Left_tmp{1}, 'FM');
-    % FM right
-    FMs_Right_tmp = dataExtraction(subj, OS, 'FM', 'RightEar');
-    FMright_tmp = FMs_Right_tmp{1}.thresh;
-    FMright = mean(FMright_tmp);
-    percentFM_right = obvsMistkCntr(FMs_Right_tmp{1}, 'FM');
-    for b = 1
-        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
-            subjs_All{s}, ITD_mean, FMleft, FMright, percentITD, percentFM_left, percentFM_right, ...
-            FFR_mag1K_NH_Cz(s), FFR_mag500_NH_Cz(s),...
-            FFR_plv500_NH_Cz(s), FFR_plv1K_NH_Cz(s),...
-            erp_n1lat180(s), erp_p2lat180(s));
-        fprintf(fid, '\n');
-    end
-    fprintf(fid, '\n');
-end
-
-%% Behavior FM and ITD
+%% Behavior FM and ITD, with audiogram 
 fid = fopen('dataSetBehavior.csv', 'w');
-fprintf(fid, 'Subject, ITDmean, ITDmedian, ITDmin, ITDmax, FMleftMean, FMleftMedian, FMleftMin, FMleftMax, FMrightMean, FMrightMedian, FMrightMin, FMrightMax, mistakeITD, mistakeFMLeft, mistakeFMRight, HL500left, HL500right, HL4Kleft, HL4Kright\n');
+fprintf(fid, 'Subject, ITDmean, ITDmedian, ITDmin, ITDmax, FMleftMean, FMleftMedian, FMleftMin, FMleftMax, FMrightMean, FMrightMedian, FMrightMin, FMrightMax, mistakeITD, mistakeFMLeft, mistakeFMRight, HL500left, HL500right, HFAleft, HFAright\n');
 numSubj = numel(subjs_behavior);
 
 for s = 1:numSubj
@@ -113,7 +21,7 @@ for s = 1:numSubj
     % ITD
     ITDs_tmp = dataExtraction(subj, OS, 'ITD3down1up', 'BothEar');
     ITDs = ITDs_tmp{1}.thresh;
-    ITD_mean = mean(ITDs, 2);
+    ITD_mean = mean(ITDs);
     ITD_median = median(ITDs);
     ITD_max = max(ITDs);
     ITD_min = min(ITDs);
@@ -139,9 +47,130 @@ for s = 1:numSubj
     HLleft = dataExtraction(subj, OS, 'Audiogram', 'LeftEar');
     for b = 1
         fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
-            subjs_behavior{s}, ITD_mean, ITD_median, ITD_min, ITD_max, FMleftMean, FMleftMedian, FMleftMin, FMleftMax, FMrightMean, FMrightMedian, FMrightMin, FMrightMax,...
+            subjs_behavior{s}, ITD_mean, ITD_median, ITD_min, ITD_max, ...
+            FMleftMean, FMleftMedian, FMleftMin, FMleftMax, ...
+            FMrightMean, FMrightMedian, FMrightMin, FMrightMax,...
             percentITD, percentFM_left, percentFM_right, ...
-            HLleft{1}.thresh(1), HLright{1}.thresh(1), HLleft{1}.thresh(4), HLright{1}.thresh(4));
+            HLleft{1}.thresh(1), HLright{1}.thresh(1), ...
+            mean([HLleft{1}.thresh(4), HLleft{1}.thresh(5)]), ...
+            mean([HLright{1}.thresh(4), HLright{1}.thresh(5)]));
+        fprintf(fid, '\n');
+    end
+    fprintf(fid, '\n');
+end
+
+%% Behavior & EEG (ITD) dataset
+fid = fopen('dataSetBehaviorEEG_ITD.csv', 'w');
+fprintf(fid, 'Subject, ITDmean, ITDmedian, ITDmin, ITDmax, FMleftMean, FMleftMedian, FMleftMin, FMleftMax, FMrightMean, FMrightMedian, FMrightMin, FMrightMax, mistakeITD, mistakeFMLeft, mistakeFMRight, ERPn1lat180, ERPp2lat180, ERPmag180, ITCmag180, HL500left, HL500right, HFAleft, HFAright\n');
+numSubj = numel(subjs_behavior_EEG_ITD);
+load('ERP_n1lat180');% variable: erp_n1lat180
+load('ERP_p2lat180');% variable: erp_p2lat180
+load('ERP_mag180');
+load('ITC_mag180');
+
+for s = 1:numSubj
+    subj{1} = subjs_behavior_EEG_ITD{s};
+    % ITD
+    ITDs_tmp = dataExtraction(subj, OS, 'ITD3down1up', 'BothEar');
+    ITDs = ITDs_tmp{1}.thresh;
+    ITD_mean = mean(ITDs);
+    ITD_median = median(ITDs);
+    ITD_min = min(ITDs);
+    ITD_max = max(ITDs);
+    percentITD = obvsMistkCntr(ITDs_tmp{1}, 'ITD');
+    % FM left
+    FMs_Left_tmp = dataExtraction(subj, OS, 'FM', 'LeftEar');
+    FMleft_tmp = FMs_Left_tmp{1}.thresh;
+    FMleftMean = mean(FMleft_tmp);
+    FMleftMedian = median(FMleft_tmp);
+    FMleftMin = min(FMleft_tmp);
+    FMleftMax = max(FMleft_tmp);
+    percentFM_left = obvsMistkCntr(FMs_Left_tmp{1}, 'FM');
+    % FM right
+    FMs_Right_tmp = dataExtraction(subj, OS, 'FM', 'RightEar');
+    FMright_tmp = FMs_Right_tmp{1}.thresh;
+    FMrightMean = mean(FMright_tmp);
+    FMrightMedian = median(FMright_tmp);
+    FMrightMin = min(FMright_tmp);
+    FMrightMax = max(FMright_tmp);
+    percentFM_right = obvsMistkCntr(FMs_Right_tmp{1}, 'FM');
+    % Audiogram
+    HLright = dataExtraction(subj, OS, 'Audiogram', 'RightEar');
+    HLleft = dataExtraction(subj, OS, 'Audiogram', 'LeftEar');
+    for b = 1
+        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
+            subj{1}, ...
+            ITD_mean, ITD_median, ITD_min, ITD_max,...
+            FMleftMean, FMleftMedian, FMleftMin, FMleftMax,...
+            FMrightMean, FMrightMedian, FMrightMin, FMrightMax,...
+            percentITD, percentFM_left, percentFM_right, ...
+            erp_n1lat180(s), erp_p2lat180(s), ...
+            erp_mag180(s), ...
+            itc_mag180(s), ...
+            HLleft{1}.thresh(1), HLright{1}.thresh(1), ...
+            mean([HLleft{1}.thresh(4), HLleft{1}.thresh(5)]), ...
+            mean([HLright{1}.thresh(4), HLright{1}.thresh(5)]));
+        fprintf(fid, '\n');
+    end
+    fprintf(fid, '\n');
+end
+
+%% Behavior & EEG (ITD&FFR) dataset
+fid = fopen('dataSetBehaviorEEG_ITD_FFR.csv', 'w');
+fprintf(fid, 'Subject, ITDmean, ITDmedian, ITDmin, ITDmax, FMleftMean, FMleftMedian, FMleftMin, FMleftMax, FMrightMean, FMrightMedian, FMrightMin, FMrightMax, mistakeITD, mistakeFMLeft, mistakeFMRight, ERPn1lat180, ERPp2lat180, ERPmag180, ITCmag180, HL500left, HL500right, HFAleft, HFAright, FFR1Kmag, ABRpos, ABRneg\n');
+numSubj = numel(subjs_behavior_FFR);
+load('ERP_n1lat180_FFR');% variable: erp_n1lat180_ffr
+load('ERP_p2lat180_FFR');% variable: erp_p2lat180_ffr
+load('ERP_mag180_FFR');
+load('ITC_mag180_FFR');
+load('FFR_mag1k');
+load('ABR_pos');
+load('ABR_neg');
+
+for s = 1:numSubj
+    subj{1} = subjs_behavior_FFR{s};
+    % ITD
+    ITDs_tmp = dataExtraction(subj, OS, 'ITD3down1up', 'BothEar');
+    ITDs = ITDs_tmp{1}.thresh;
+    ITD_mean = mean(ITDs);
+    ITD_median = median(ITDs);
+    ITD_min = min(ITDs);
+    ITD_max = max(ITDs);
+    percentITD = obvsMistkCntr(ITDs_tmp{1}, 'ITD');
+    % FM left
+    FMs_Left_tmp = dataExtraction(subj, OS, 'FM', 'LeftEar');
+    FMleft_tmp = FMs_Left_tmp{1}.thresh;
+    FMleftMean = mean(FMleft_tmp);
+    FMleftMedian = median(FMleft_tmp);
+    FMleftMin = min(FMleft_tmp);
+    FMleftMax = max(FMleft_tmp);
+    percentFM_left = obvsMistkCntr(FMs_Left_tmp{1}, 'FM');
+    % FM right
+    FMs_Right_tmp = dataExtraction(subj, OS, 'FM', 'RightEar');
+    FMright_tmp = FMs_Right_tmp{1}.thresh;
+    FMrightMean = mean(FMright_tmp);
+    FMrightMedian = median(FMright_tmp);
+    FMrightMin = min(FMright_tmp);
+    FMrightMax = max(FMright_tmp);
+    percentFM_right = obvsMistkCntr(FMs_Right_tmp{1}, 'FM');
+    % Audiogram
+    HLright = dataExtraction(subj, OS, 'Audiogram', 'RightEar');
+    HLleft = dataExtraction(subj, OS, 'Audiogram', 'LeftEar');
+    for b = 1
+        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
+            subj{1}, ...
+            ITD_mean, ITD_median, ITD_min, ITD_max,...
+            FMleftMean, FMleftMedian, FMleftMin, FMleftMax,...
+            FMrightMean, FMrightMedian, FMrightMin, FMrightMax,...
+            percentITD, percentFM_left, percentFM_right, ...
+            erp_n1lat180_ffr(s), erp_p2lat180_ffr(s), ...
+            erp_mag180_ffr(s), ...
+            itc_mag180_ffr(s), ...
+            HLleft{1}.thresh(1), HLright{1}.thresh(1), ...
+            mean([HLleft{1}.thresh(4), HLleft{1}.thresh(5)]), ...
+            mean([HLright{1}.thresh(4), HLright{1}.thresh(5)]), ...
+            ffr1kmag(s), ...
+            abr_pos(s), abr_neg(s));
         fprintf(fid, '\n');
     end
     fprintf(fid, '\n');
