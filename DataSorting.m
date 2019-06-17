@@ -117,16 +117,14 @@ end
 
 %% Behavior & EEG (ITD&FFR) dataset
 fid = fopen('dataSetBehaviorEEG_ITD_FFR.csv', 'w');
-fprintf(fid, 'Subject, ITDmean, ITDmedian, ITDmin, ITDmax, FMleftMean, FMleftMedian, FMleftMin, FMleftMax, FMrightMean, FMrightMedian, FMrightMin, FMrightMax, mistakeITD, mistakeFMLeft, mistakeFMRight, ERPn1lat180, ERPp2lat180, ERPmag180, ITCmag180, HL500left, HL500right, HFAleft, HFAright, FFR1Kmag, ABRpos, ABRneg\n');
+fprintf(fid, 'Subject, ITDmean, ITDmedian, ITDmin, ITDmax, FMleftMean, FMleftMedian, FMleftMin, FMleftMax, FMrightMean, FMrightMedian, FMrightMin, FMrightMax, mistakeITD, mistakeFMLeft, mistakeFMRight, ERPn1lat180, ERPp2lat180, ERPmag180, ITCmag180, HL500left, HL500right, HFAleft, HFAright, FFR1Kmag, Ref\n');
 numSubj = numel(subjs_behavior_FFR);
 load('ERP_n1lat180_FFR');% variable: erp_n1lat180_ffr
 load('ERP_p2lat180_FFR');% variable: erp_p2lat180_ffr
 load('ERP_mag180_FFR');
 load('ITC_mag180_FFR');
 load('FFR_mag1k');
-load('ABR_pos');
-load('ABR_neg');
-
+load('rms');
 for s = 1:numSubj
     subj{1} = subjs_behavior_FFR{s};
     % ITD
@@ -157,7 +155,7 @@ for s = 1:numSubj
     HLright = dataExtraction(subj, OS, 'Audiogram', 'RightEar');
     HLleft = dataExtraction(subj, OS, 'Audiogram', 'LeftEar');
     for b = 1
-        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
+        fprintf(fid, '%s, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f', ...
             subj{1}, ...
             ITD_mean, ITD_median, ITD_min, ITD_max,...
             FMleftMean, FMleftMedian, FMleftMin, FMleftMax,...
@@ -170,7 +168,7 @@ for s = 1:numSubj
             mean([HLleft{1}.thresh(4), HLleft{1}.thresh(5)]), ...
             mean([HLright{1}.thresh(4), HLright{1}.thresh(5)]), ...
             ffr1kmag(s), ...
-            abr_pos(s), abr_neg(s));
+            refs(s)/(10e-6));
         fprintf(fid, '\n');
     end
     fprintf(fid, '\n');
