@@ -1,4 +1,4 @@
-function [subjs_behavior] = subjs_behavior_set
+function [subjs_behavior, subjs_NH] = subjs_behavior_set
 OS = 'Ubuntu';
 
 rootDir = '/media/agudemu/Storage/Data/Behavior/';
