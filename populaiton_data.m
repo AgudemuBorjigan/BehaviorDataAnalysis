@@ -19,7 +19,7 @@ subjs_FFR = subjNames(strcat(rootDir, 'FFR'));
 subjs_behavior_FFR = intersect(subjs_behavior_EEG_ITD, subjs_FFR);   
 
 %% Behavior & EEG (ITD&FFR) dataset
-fid = fopen('dataSetBehaviorEEG_ITD_FFR.csv', 'w');
+fid = fopen('dataSet.csv', 'w');
 fprintf(fid, 'Subject, ITDmean, FMleftMean, FMrightMean, mistakeITD, mistakeFMLeft, mistakeFMRight, ERPn1lat180, ERPp2lat180, ERPmag180, FFR1Kmag, Ref, HL500left, HL500right, HFAleft, HFAright\n');
 numSubj = numel(subjs_behavior);
 
