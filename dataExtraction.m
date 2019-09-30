@@ -1,6 +1,6 @@
 function dataArray = dataExtraction(subjs, OS, stimType, earType)
 dataArray = cell(1, numel(subjs));
-problematic = zeros(1, numel(subjs)); % CHECK IF THERE IS NEGATIVE FDEV VALUES
+problematic_fdev = zeros(1, numel(subjs)); % CHECK IF THERE IS NEGATIVE FDEV VALUES
 for s = 1:numel(subjs)
     subjID = subjs{s};
     % CHANGE AS NEEDE
@@ -19,10 +19,9 @@ for s = 1:numel(subjs)
         freqs  = [0.5, 1, 2, 4, 8]*1000; 
         avgThresh = [8.6, 2.7, 0.5, 0.1, 23.1]; 
     end
-    
-    allFiles = dir(strcat(dataDir, '/*.mat')); % this makes sure hidden files are not included
-    blockNum = numel(allFiles);
-    
+    % to make sure hidden files are not included
+    allFiles = dir(strcat(dataDir, '/*.mat')); 
+    blockNum = numel(allFiles); % repetition
     thresholds = zeros(1, numel(allFiles));
     parmtrList = cell(1, numel(allFiles));
     responseList = cell(1, numel(allFiles));
@@ -44,7 +43,7 @@ for s = 1:numel(subjs)
             thresholds(i) = thresh;
             parmtrList{i} = fdevList;
             if sum(fdevList<0)
-                problematic(s) = 1;
+                problematic_fdev(s) = 1;
             end
         elseif strcmp(stimType, 'Audiogram')
             thresholds(i) = thresh - avgThresh(i);

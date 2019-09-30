@@ -1,5 +1,6 @@
-datadir = '/media/agudemu/Storage/Data/Behavior/Audiogram/S187/';
-cd '/media/agudemu/Storage/Data/Behavior/Audiogram/S187/'
+% this file calibrates subject's response from audiogram into hearng level
+datadir = '/media/agudemu/Storage/Data/Behavior/Audiogram/S149/';
+cd '/media/agudemu/Storage/Data/Behavior/Audiogram/S149/'
 %datadir = '/Users/baoagudemu1/Desktop/Lab/Experiment/DataAnalysis/Data/S199_behavior/Audiogram/';
 %cd '/Users/baoagudemu1/Desktop/Lab/Experiment/DataAnalysis/Data/S199_behavior/Audiogram/';
 subjs = dir(strcat(datadir, '*Ear'));
@@ -20,8 +21,7 @@ for k = 1:numel(subjs)
         fsearch = strcat(subj.folder, '/', subj.name, '/', subj.name, '_', ...
             num2str(freq), '*.mat');
         fnames = dir(fsearch);
-        ftemp = fnames(1);
-        fname = ftemp.name;
+        fname = fnames.name;
         data = load(strcat(subj.folder, '/', subj.name, '/', fname), 'thresh');
         hearingLevel = data.thresh - avgThresh(j);
         threshArrays(k, j) = hearingLevel;

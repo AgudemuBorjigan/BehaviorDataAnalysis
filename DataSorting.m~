@@ -1,3 +1,4 @@
+% this file pools all 
 OS = 'Ubuntu';
 [subjs_behavior, subjs_NH] = subjs_behavior_set;
 rootDir = '/media/agudemu/Storage/Data/EEG/';
